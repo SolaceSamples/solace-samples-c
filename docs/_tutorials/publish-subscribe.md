@@ -13,12 +13,13 @@ This tutorial will introduce you to the fundamentals of the Solace API by connec
 
 This tutorial assumes the following:
 
-*   You are familiar with Solace [core concepts](http://dev.solacesystems.com/docs/core-concepts/){:target="_top"}.
+*   You are familiar with Solace [core concepts]({{ site.docs-core-concepts}}){:target="_top"}.
 *   You have access to a running Solace message router with the following configuration:
     *   Enabled message VPN
     *   Enabled client username
 
-One simple way to get access to a Solace message router is to start a Solace VMR load [as outlined here](http://dev.solacesystems.com/docs/get-started/setting-up-solace-vmr_vmware/){:target="_top"}.
+One simple way to get access to a Solace message router is to start a Solace VMR load [as outlined here]({{ site.docs-vmr-setup }}){:target="_top"}.
+
 ## Goals
 
 The goal of this tutorial is to demonstrate the most basic messaging interaction using Solace. This tutorial will show you:
@@ -31,70 +32,40 @@ The goal of this tutorial is to demonstrate the most basic messaging interaction
 In order to send or receive messages to a Solace message router, you need to know a few details of how to connect to the Solace message router. Specifically you need to know the following:
 
 <table>
-
-<tbody>
-
 <tr>
-
-<td width="133">**Resource**</td>
-
-<td width="138">**Value**</td>
-
-<td width="379">**Description**</td>
-
+<td>Resource</td>
+<td>Value</td>
+<td>Description</td>
 </tr>
-
 <tr>
-
-<td width="133">Host</td>
-
-<td width="138">String of the form <> or <></td>
-
-<td width="379">This is the address clients use when connecting to the Solace message router to send and receive messages.  
+<td>Host</td>
+<td>String of the form <code>DNS name</code> or <code>IP:Port</code></td>
+<td>This is the address clients use when connecting to the Solace message router to send and receive messages.  
 For a Solace VMR this there is only a single interface so the IP is the same as the management IP address.  
 For Solace message router appliances this is the host address of the message-backbone.</td>
-
 </tr>
-
 <tr>
-
-<td width="133">Message VPN</td>
-
-<td width="138">String</td>
-
-<td width="379">The Solace message router Message VPN that this client should connect to. The simplest option is to use the "default" message-vpn which is present on all Solace message routers and fully enabled for message traffic on Solace VMRs.</td>
-
+<td>Message VPN</td>
+<td>String</td>
+<td>The Solace message router Message VPN that this client should connect to. The simplest option is to use the "default" message-vpn which is present on all Solace message routers and fully enabled for message traffic on Solace VMRs.</td>
 </tr>
-
 <tr>
-
-<td width="133">Client Username</td>
-
-<td width="138">String</td>
-
-<td width="379">The client username. For the Solace VMR default message VPN, authentication is disabled by default, so this can be any value.</td>
-
+<td>Client Username</td>
+<td>String</td>
+<td>The client username. For the Solace VMR default message VPN, authentication is disabled by default, so this can be any value.</td>
 </tr>
-
 <tr>
-
-<td width="133">Client Password</td>
-
-<td width="138">String</td>
-
-<td width="379">The optional client password. For the Solace VMR default message VPN, authentication is disabled by default, so this can be any value or omitted.</td>
-
+<td>Client Password</td>
+<td>String</td>
+<td>The optional client password. For the Solace VMR default message VPN, authentication is disabled by default, so this can be any value or omitted.</td>
 </tr>
-
-</tbody>
-
 </table>
 
 For the purposes of this tutorial, you will connect to the default message VPN of a Solace VMR. So the only required information to proceed is the Solace VMR host string which this tutorial accepts as an argument.
 
 ## Obtaining the Solace API
 
-This tutorial depends on you having the C API downloaded and available. The C API library can be [downloaded here](http://dev.solacesystems.com/downloads/){:target="_top"}. The C API is distributed as a gzipped tar file for the platform you're working with. The API developer documentation is downloaded a separate tar file. The instructions in this tutorial assume you have downloaded the C API library, unpacked it to a known location and are executing the provided build instructions from a sub-directory within the C API library root. If your environment differs then adjust the build instructions appropriately.
+This tutorial depends on you having the C API downloaded and available. The C API library can be [downloaded here]({{ site.links-downloads }}){:target="_top"}. The C API is distributed as a gzipped tar file for the platform you're working with. The API developer documentation is downloaded a separate tar file. The instructions in this tutorial assume you have downloaded the C API library, unpacked it to a known location and are executing the provided build instructions from a sub-directory within the C API library root. If your environment differs then adjust the build instructions appropriately.
 
 ## Connecting to the Solace message router
 
@@ -142,17 +113,17 @@ eventCallback ( solClient_opaqueSession_pt opaqueSession_p,
 {  
     printf("Session EventCallback() called:  %s\n", solClient_session_eventToString ( eventInfo_p->sessionEvent));
 }
-
+```
 
 The messageReceiveCallback is invoked for each Direct message received by the Session. In this sample, the message is printed to the screen.
 
-The eventCallback is invoked for various significant session events like connection, disconnection, and other SolClient session events. In this sample, simply prints the events. See the [SolClient API documentation](/docs/enterprise-api-docs/) and samples for details on the session events.
+The eventCallback is invoked for various significant session events like connection, disconnection, and other SolClient session events. In this sample, simply prints the events. See the [SolClient API documentation]({{ site.docs-api-ref }}){:target="_top"} and samples for details on the session events.
 
 ### Context Creation
 
 As outlined in the core concepts, the context object is used to control threading that drives network I/O and message delivery and acts as containers for sessions. The easiest way to create a context is to use the context initializer with default thread creation.
 
-
+```cpp
 /* Context */
 solClient_opaqueContext_pt context_p;
 solClient_context_createFuncInfo_t contextFuncInfo = SOLCLIENT_CONTEXT_CREATEFUNC_INITIALIZER;
@@ -207,6 +178,7 @@ At this point your client is connected to the Solace message router. You can use
 ## Receiving a message
 
 This tutorial is uses "Direct" messages which are at most once delivery messages. So first, let's express interest in the messages by subscribing to a Solace topic. Then you can look at publishing a matching message and see it received.  
+
 ![]({{ site.baseurl }}/images/pub-sub-receiving-message-300x134.png)
 
 With a session connected in the previous step, then you must subscribe to a topic in order to express interest in receiving messages. This tutorial uses the topics "tutorial/topic".
@@ -230,11 +202,13 @@ while ( msgCount < 1 ) {
 ## Sending a message
 
 Now it is time to send a message to the waiting consumer.  
+
 ![]({{ site.baseurl }}/images/pub-sub-sending-message-300x134.png)
 
 To send a message, you must create a message and a topic destination. This tutorial will send a Solace binary message with contents "Hello world!". Then you must send the message to the Solace message router.
 
-```cpp/* Message */
+```cpp
+/* Message */
 solClient_opaqueMsg_pt msg_p = NULL;ss
 solClient_destination_t destination;
 const char *text_p = "Hello world!";
@@ -257,7 +231,6 @@ solClient_msg_setBinaryAttachment ( msg_p, text_p, ( solClient_uint32_t ) strlen
 printf ( "About to send message '%s' to topic '%s'...\n", (char *)text_p, argv[4] );
 solClient_session_sendMsg ( session_p, msg_p );
 
-```cpp
 printf ( "Message sent. Exiting.\n" );
 solClient_msg_free ( &msg_p );
 ```
@@ -323,6 +296,6 @@ Exiting.
 
 The received message is printed to the screen. The message contents was "Hello world!" as expected and shown in the contents of the message dump along with additional information about the Solace message that was received.
 
-If you have any issues sending and receiving a message, check the [Solace community](http://dev.solacesystems.com/community/){:target="_top"} for answers to common issues seen.
+If you have any issues sending and receiving a message, check the [Solace community]({{ site.links-community }}){:target="_top"} for answers to common issues seen.
 
 You have now successfully connected a client, subscribed to a topic and exchanged messages using this topic.
