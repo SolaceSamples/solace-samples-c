@@ -250,7 +250,7 @@ Combining the example source code show above results in the following source cod
 *   [os.c]({{ site.repository }}/blob/master/src/HelloWorldPubSub/os.c){:target="_blank"}
 *   [os.h]({{ site.repository }}/blob/master/src/HelloWorldPubSub/os.h){:target="_blank"}
 
-The OS source code simply provides platform abstraction. The subscriber sample makes use of this for the sleep in the main loop.
+The OS source code simply provides platform abstraction. The subscriber sample makes use of this for the sleep in the main loop. 
 
 ### Building
 
