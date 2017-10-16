@@ -2,12 +2,10 @@
 layout: tutorials
 title: Publish/Subscribe
 summary: Learn how to set up pub/sub on a Solace VMR.
-icon: publish-subscribe.png
+icon: I_dev_P+S.svg
 ---
 
 This tutorial will introduce you to the fundamentals of the Solace API by connecting a client, adding a topic subscription and sending a message matching this topic subscription. This forms the basis for any publish / subscribe message exchange illustrated here:
-
-![]({{ site.baseurl }}/images/publish-subscribe.png)
 
 ## Assumptions
 
@@ -250,15 +248,15 @@ Combining the example source code show above results in the following source cod
 *   [os.c]({{ site.repository }}/blob/master/src/HelloWorldPubSub/os.c){:target="_blank"}
 *   [os.h]({{ site.repository }}/blob/master/src/HelloWorldPubSub/os.h){:target="_blank"}
 
-The OS source code simply provides platform abstraction. The subscriber sample makes use of this for the sleep in the main loop. 
+The OS source code simply provides platform abstraction. The subscriber sample makes use of this for the sleep in the main loop.
 
 ### Building
 
 Building these examples is simple. The following provides an example using Linux. For ideas on how to build on other platforms you can consult the README of the C API library.
 
 ```
-gcc -g -Wall -I ../include -L ../lib -lsolclient HelloWorldPub.c -o HelloWorldPub
-gcc -g -Wall -I ../include -L ../lib -lsolclient os.c HelloWorldSub.c -o HelloWorldSub
+gcc -g -Wall -I ../include -L ../lib -lsolclient -lpthread HelloWorldPub.c -o HelloWorldPub
+gcc -g -Wall -I ../include -L ../lib -lsolclient -lpthread os.c HelloWorldSub.c -o HelloWorldSub
 ```
 
 Referencing the downloaded SolClient library include and lib file is required. For more advanced build control, consider adapting the makefile found in the "Intro" directory of the SolClient package. The above samples very closely mirror the samples found there.
