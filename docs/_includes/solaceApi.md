@@ -1,0 +1,4 @@
+
+## Obtaining the Solace API
+
+This tutorial depends on you having the C API downloaded and available. The C API library can be [downloaded here]({{ site.links-downloads }}){:target="_top"}. The C API is distributed as a gzipped tar file for the platform you're working with. The API developer documentation is downloaded a separate tar file. The instructions in this tutorial assume you have downloaded the C API library, unpacked it to a known location and are executing the provided build instructions from a sub-directory within the C API library root. If your environment differs then adjust the build instructions appropriately.

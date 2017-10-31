@@ -3,20 +3,34 @@ layout: tutorials
 title: Publish/Subscribe
 summary: Learn how to set up pub/sub on a Solace VMR.
 icon: I_dev_P+S.svg
+links:
+    - label: HelloWorldPub.c
+      link: /blob/master/src/HelloWorldPubSub/HelloWorldPub.c
+    - label: HelloWorldPub.c
+      link: /blob/master/src/HelloWorldPubSub/HelloWorldSub.c
+    - label: os.c
+      link: /blob/master/src/HelloWorldPubSub/os.c
+    - label: os.h
+      link: /blob/master/src/HelloWorldPubSub/os.h
 ---
 
-This tutorial will introduce you to the fundamentals of the Solace API by connecting a client, adding a topic subscription and sending a message matching this topic subscription. This forms the basis for any publish / subscribe message exchange illustrated here:
+This tutorial will introduce you to the fundamentals of the Solace API by connecting a client, adding a topic subscription and sending a message matching this topic subscription. This forms the basis for any publish / subscribe message exchange.
 
 ## Assumptions
 
 This tutorial assumes the following:
 
-*   You are familiar with Solace [core concepts]({{ site.docs-core-concepts}}){:target="_top"}.
-*   You have access to a running Solace message router with the following configuration:
-    *   Enabled message VPN
-    *   Enabled client username
+*   You are familiar with Solace [core concepts]({{ site.docs-core-concepts }}){:target="_top"}.
+*   You have access to Solace messaging with the following configuration details:
+    *   Connectivity information for a Solace message-VPN
+    *   Enabled client username and password
 
-One simple way to get access to a Solace message router is to start a Solace VMR load [as outlined here]({{ site.docs-vmr-setup }}){:target="_top"}.
+{% if jekyll.environment == 'solaceCloud' %}
+One simple way to get access to Solace messaging quickly is to create a messaging service in Solace Cloud [as outlined here]({{ site.links-solaceCloud-setup}}){:target="_top"}. You can find other ways to get access to Solace messaging on the [home page]({{ site.baseurl }}/) of these tutorials.
+{% else %}
+One simple way to get access to a Solace message router is to start a Solace VMR load [as outlined here]({{ site.docs-vmr-setup }}){:target="_top"}. By default the Solace VMR will with the “default” message VPN configured and ready for guaranteed messaging. Going forward, this tutorial assumes that you are using the Solace VMR. If you are using a different Solace message router configuration adapt the tutorial appropriately to match your configuration.
+{% endif %}
+
 
 ## Goals
 
@@ -25,45 +39,12 @@ The goal of this tutorial is to demonstrate the most basic messaging interaction
 1.  How to build and send a message on a topic
 2.  How to subscribe to a topic and receive a message
 
-## Solace message router properties
-
-In order to send or receive messages to a Solace message router, you need to know a few details of how to connect to the Solace message router. Specifically you need to know the following:
-
-<table>
-<tr>
-<td>Resource</td>
-<td>Value</td>
-<td>Description</td>
-</tr>
-<tr>
-<td>Host</td>
-<td>String of the form <code>DNS name</code> or <code>IP:Port</code></td>
-<td>This is the address clients use when connecting to the Solace message router to send and receive messages.  
-For a Solace VMR this there is only a single interface so the IP is the same as the management IP address.  
-For Solace message router appliances this is the host address of the message-backbone.</td>
-</tr>
-<tr>
-<td>Message VPN</td>
-<td>String</td>
-<td>The Solace message router Message VPN that this client should connect to. The simplest option is to use the "default" message-vpn which is present on all Solace message routers and fully enabled for message traffic on Solace VMRs.</td>
-</tr>
-<tr>
-<td>Client Username</td>
-<td>String</td>
-<td>The client username. For the Solace VMR default message VPN, authentication is disabled by default, so this can be any value.</td>
-</tr>
-<tr>
-<td>Client Password</td>
-<td>String</td>
-<td>The optional client password. For the Solace VMR default message VPN, authentication is disabled by default, so this can be any value or omitted.</td>
-</tr>
-</table>
-
-For the purposes of this tutorial, you will connect to the default message VPN of a Solace VMR. So the only required information to proceed is the Solace VMR host string which this tutorial accepts as an argument.
-
-## Obtaining the Solace API
-
-This tutorial depends on you having the C API downloaded and available. The C API library can be [downloaded here]({{ site.links-downloads }}){:target="_top"}. The C API is distributed as a gzipped tar file for the platform you're working with. The API developer documentation is downloaded a separate tar file. The instructions in this tutorial assume you have downloaded the C API library, unpacked it to a known location and are executing the provided build instructions from a sub-directory within the C API library root. If your environment differs then adjust the build instructions appropriately.
+{% if jekyll.environment == "solaceCloud" %}
+  {% include solaceMessaging-cloud.md %}
+{% else %}
+  {% include solaceMessaging.md %}
+{% endif %}  
+{% include solaceApi.md %}
 
 ## Connecting to the Solace message router
 
@@ -142,6 +123,7 @@ solClient_session_createFuncInfo_t sessionFuncInfo = SOLCLIENT_SESSION_CREATEFUN
 /* Session Properties */
 const char     *sessionProps[20];
 int             propIndex = 0;
+char *username,*password,*vpnname,*host;
 
 /* Configure the Session function information. */
 sessionFuncInfo.rxMsgInfo.callback_p = messageReceiveCallback;
@@ -151,13 +133,22 @@ sessionFuncInfo.eventInfo.user_p = NULL;
 
 /* Configure the Session properties. */
 propIndex = 0;
+host = argv[1];
+vpnname = argv[2];
+username = strsep(&vpnname,"@");
+password = argv[3];
+
 sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_HOST;
-sessionProps[propIndex++] = argv[1];
+sessionProps[propIndex++] = host;
+
 sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_VPN_NAME;
-sessionProps[propIndex++] = "default";
+sessionProps[propIndex++] = vpnname;
+
 sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_USERNAME;
-sessionProps[propIndex++] = "helloWorldTutorial";
-sessionProps[propIndex] = NULL;
+sessionProps[propIndex++] = username;
+
+sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_PASSWORD;
+sessionProps[propIndex] = password;
 
 /* Create the Session. */
 solClient_session_create ( ( char ** ) sessionProps,
@@ -241,12 +232,13 @@ At this point the producer has sent a message to the Solace message router and y
 
 ## Summarizing
 
-Combining the example source code show above results in the following source code files:
+The full source code for this example is available in [GitHub]({{ site.repository }}){:target="_blank"}. If you combine the example source code shown above results in the following source:
 
-*   [HelloWorldPub.c]({{ site.repository }}/blob/master/src/HelloWorldPubSub/HelloWorldPub.c){:target="_blank"}
-*   [HelloWorldSub.c]({{ site.repository }}/blob/master/src/HelloWorldPubSub/HelloWorldSub.c){:target="_blank"}
-*   [os.c]({{ site.repository }}/blob/master/src/HelloWorldPubSub/os.c){:target="_blank"}
-*   [os.h]({{ site.repository }}/blob/master/src/HelloWorldPubSub/os.h){:target="_blank"}
+<ul>
+{% for item in page.links %}
+<li><a href="{{ site.repository }}{{ item.link }}" target="_blank">{{ item.label }}</a></li>
+{% endfor %}
+</ul>
 
 The OS source code simply provides platform abstraction. The subscriber sample makes use of this for the sleep in the main loop.
 
@@ -261,19 +253,19 @@ gcc -g -Wall -I ../include -L ../lib -lsolclient -lpthread os.c HelloWorldSub.c 
 
 Referencing the downloaded SolClient library include and lib file is required. For more advanced build control, consider adapting the makefile found in the "Intro" directory of the SolClient package. The above samples very closely mirror the samples found there.
 
-If you start the HelloWoldSub with a single argument for the Solace message router host address it will connect and wait for a message.
+If you start the HelloWoldSub with  the required arguments of your Solace messaging, it will connect and wait for a message.
 
 ```
-$ LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH ./HelloWorldSub <<HOST_ADDRESS>>
+$ LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH ./HelloWorldSub <host:port> <client-username@message-vpn> <client-password>
 HelloWorldSub initializing...
 Session EventCallback() called:  Session up
 Connected. Awaiting message...
 ```
 
-Then you can send a message using the HelloWorldPub again using a single argument to specify the Solace message router host address. If successful, the output for the producer will look like the following:
+Then you can send a message using the HelloWorldPub with the same arguments. If successful, the output for the producer will look like the following:
 
 ```
-$ LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH ./HelloWorldPub <<HOST_ADDRESS>>
+$ LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH ./HelloWorldPub <host:port> <client-username@message-vpn> <client-password>
 HelloWorldPub initializing...
 Session EventCallback() called:  Session up
 Connected. About to send message 'Hello world!' to topic 'tutorial/topic'...

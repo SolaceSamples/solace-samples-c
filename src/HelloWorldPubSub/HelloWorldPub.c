@@ -61,16 +61,17 @@ main ( int argc, char *argv[] )
     solClient_session_createFuncInfo_t sessionFuncInfo = SOLCLIENT_SESSION_CREATEFUNC_INITIALIZER;
 
     /* Session Properties */
-    const char     *sessionProps[20];
+    const char     *sessionProps[50];
     int             propIndex = 0;
+    char *username,*password,*vpnname,*host;
 
     /* Message */
     solClient_opaqueMsg_pt msg_p = NULL;
     solClient_destination_t destination;
     const char *text_p = "Hello world!";
 
-    if ( argc < 2 ) {
-        printf ( "Usage: HelloWorldPub <msg_backbone_ip:port>\n" );
+    if ( argc < 4 ) {
+        printf ( "Usage: HelloWorldPub <host:port> <client-username@message-vpn> <client-password>\n" );
         return -1;
     }
 
@@ -109,17 +110,22 @@ main ( int argc, char *argv[] )
 
     /* Configure the Session properties. */
     propIndex = 0;
+    host = argv[1];
+    vpnname = argv[2];
+    username = strsep(&vpnname,"@");
+    password = argv[3];
 
     sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_HOST;
-    sessionProps[propIndex++] = argv[1];
+    sessionProps[propIndex++] = host;
 
     sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_VPN_NAME;
-    sessionProps[propIndex++] = "default";
+    sessionProps[propIndex++] = vpnname;
 
     sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_USERNAME;
-    sessionProps[propIndex++] = "helloWorldTutorial";
+    sessionProps[propIndex++] = username;
 
-    sessionProps[propIndex] = NULL;
+    sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_PASSWORD;
+    sessionProps[propIndex] = password;
 
     /* Create the Session. */
     solClient_session_create ( ( char ** ) sessionProps,
@@ -146,7 +152,7 @@ main ( int argc, char *argv[] )
     solClient_msg_setDestination ( msg_p, &destination, sizeof ( destination ) );
 
     /* Add some content to the message. */
-    solClient_msg_setBinaryAttachment ( msg_p, text_p, ( solClient_uint32_t ) strlen ( (char *)text_p ) );
+    solClient_msg_setBinaryAttachment ( msg_p, (char *)text_p, ( solClient_uint32_t ) strlen ( (char *)text_p ) );
 
     /* Send the message. */
     printf ( "About to send message '%s' to topic '%s'...\n", (char *)text_p, destination.dest );
