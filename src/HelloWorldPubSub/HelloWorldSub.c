@@ -74,7 +74,7 @@ main ( int argc, char *argv[] )
     /* Session Properties */
     const char     *sessionProps[50];
     int             propIndex = 0;
-    char *username,*vpnname;
+    char *username,*password,*vpnname,*host;
 
     if ( argc < 4 ) {
         printf ( "Usage: HelloWorldSub <host:port> <client-username@message-vpn> <client-password>\n" );
@@ -113,11 +113,13 @@ main ( int argc, char *argv[] )
 
     /* Configure the Session properties. */
     propIndex = 0;
+    host = argv[1];
     vpnname = argv[2];
     username = strsep(&vpnname,"@");
+    password = argv[3];
 
     sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_HOST;
-    sessionProps[propIndex++] = argv[1];
+    sessionProps[propIndex++] = host;
 
     sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_VPN_NAME;
     sessionProps[propIndex++] = vpnname;
@@ -126,7 +128,7 @@ main ( int argc, char *argv[] )
     sessionProps[propIndex++] = username;
 
     sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_PASSWORD;
-    sessionProps[propIndex] = argv[3];
+    sessionProps[propIndex] = password;
 
     /* Create the Session. */
     solClient_session_create ( ( char ** ) sessionProps,
