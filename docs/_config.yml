@@ -1,7 +1,7 @@
 # Site settings
 title: Solace Samples C
 summary: These tutorials get you up to speed sending and receiving messages with Solace technology.
-baseurl: "/solace-samples-c" # the subpath of your site, e.g. /solace-samples-java
+baseurl: "/solace-samples-c"
 repository: https://github.com/SolaceSamples/solace-samples-c
 
 # Also see _includes/intro.html to customize the description which gets included in index.html.

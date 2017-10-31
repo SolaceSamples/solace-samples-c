@@ -72,11 +72,12 @@ main ( int argc, char *argv[] )
     solClient_session_createFuncInfo_t sessionFuncInfo = SOLCLIENT_SESSION_CREATEFUNC_INITIALIZER;
 
     /* Session Properties */
-    const char     *sessionProps[20];
+    const char     *sessionProps[50];
     int             propIndex = 0;
+    char *username,*vpnname;
 
-    if ( argc < 2 ) {
-        printf ( "Usage: HelloWorldSub <msg_backbone_ip:port> \n" );
+    if ( argc < 4 ) {
+        printf ( "Usage: HelloWorldSub <host:port> <client-username@message-vpn> <client-password>\n" );
         return -1;
     }
 
@@ -112,17 +113,20 @@ main ( int argc, char *argv[] )
 
     /* Configure the Session properties. */
     propIndex = 0;
+    vpnname = argv[2];
+    username = strsep(&vpnname,"@");
 
     sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_HOST;
     sessionProps[propIndex++] = argv[1];
 
     sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_VPN_NAME;
-    sessionProps[propIndex++] = "default";
+    sessionProps[propIndex++] = vpnname;
 
     sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_USERNAME;
-    sessionProps[propIndex++] = "helloWorldTutorial";
+    sessionProps[propIndex++] = username;
 
-    sessionProps[propIndex] = NULL;
+    sessionProps[propIndex++] = SOLCLIENT_SESSION_PROP_PASSWORD;
+    sessionProps[propIndex] = argv[3];
 
     /* Create the Session. */
     solClient_session_create ( ( char ** ) sessionProps,
@@ -159,7 +163,7 @@ main ( int argc, char *argv[] )
 
     solClient_session_topicUnsubscribeExt ( session_p,
                                             SOLCLIENT_SUBSCRIBE_FLAGS_WAITFORCONFIRM,
-                                            argv[4] );
+                                            "tutorial/topic" );
 
     /*************************************************************************
      * Cleanup
