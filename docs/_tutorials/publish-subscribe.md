@@ -6,7 +6,7 @@ icon: I_dev_P+S.svg
 links:
     - label: HelloWorldPub.c
       link: /blob/master/src/HelloWorldPubSub/HelloWorldPub.c
-    - label: HelloWorldPub.c
+    - label: HelloWorldSub.c
       link: /blob/master/src/HelloWorldPubSub/HelloWorldSub.c
     - label: os.c
       link: /blob/master/src/HelloWorldPubSub/os.c
@@ -121,7 +121,7 @@ solClient_opaqueSession_pt session_p;
 solClient_session_createFuncInfo_t sessionFuncInfo = SOLCLIENT_SESSION_CREATEFUNC_INITIALIZER;
 
 /* Session Properties */
-const char     *sessionProps[20];
+const char     *sessionProps[50];
 int             propIndex = 0;
 char *username,*password,*vpnname,*host;
 
