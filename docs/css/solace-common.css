@@ -10,155 +10,6 @@ body {
 h1 {
     font-size: 36px;
     color: rgba(0, 0, 0, 1);
-<<<<<<< HEAD
-}
-
-h2 {
-    font-size: 28px;
-    color: rgba(0, 0, 0, 0.8);
-}
-
-h4 {
-    font-size: 20px !important;
-    color: rgba(0, 0, 0, 0.8) !important;
-}
-
-p {
-    color: rgba(0, 0, 0, 0.8);
-    -webkit-font-smoothing: antialiased;
-    font-size: 16px;
-    line-height: 24px;
-    margin: 0 0 .5em;
-}
-
-.blue-gradient {
-    background: linear-gradient(#2288DD, #17B0E0);
-}
-
-.green-gradient {
-    background: linear-gradient(#165aa4, #4182be);
-}
-
-.orange-gradient {
-    background: linear-gradient(#f2631f, #FF6500);
-}
-
-.container {
-    width: 80%;
-}
-
-.index .container {
-    max-width: 993px;
-}
-
-img {
-    max-width: 100%;
-}
-
-@media only screen and (max-width : 700px) {
-    .index .container {
-        width: 98%;
-    }
-}
-
-
-/*******************************************************************************
-* Index title bar
-*/
-.index .title {
-    padding-top: 50px;
-    background: #FFF;
-    border-bottom: 1px solid #CCC;
-}
-
-.index .title .left {
-    width: 100%;
-    position: relative;
-    padding-right: 180px;
-}
-
-.index .title .col .github {
-    position: absolute;
-    right: 0;
-    top: 10px;
-    width: 180px;
-}
-
-/*******************************************************************************
-* Tutorial layout
-*/
-
-@media only screen and (max-width : 993px) {
-    .docs .container {
-        width: 98%;
-    }
-}
-
-.heading img {
-    float: left;
-    background: #9FB0BF;
-    border-radius: 14px;
-    margin-right: 30px;
-    margin-bottom: 10px;
-    width: 140px;
-    height: 140px;
-}
-
-.article-container {
-    position: relative;
-    padding-right: 245px;
-}
-
-@media only screen and (max-width : 760px) {
-    .article-container {
-        padding-right: 0;
-    }
-}
-
-article {
-    background: white;
-    border: 1px solid #CCC;
-    padding: 30px;
-    color: rgba(0, 0, 0, 0.8);
-    min-width: 400px;
-}
-
-article ul li {
-    list-style-type: circle;
-    margin: 10px 0;
-}
-
-article ol li {
-    margin: 10px 0;
-}
-
-article h2 {
-    color: rgba(0, 0, 0, 1);
-    font-size: 28px;
-    margin: 40px 0 16px 0;
-    padding-top:12px;
-    border-top:solid 2px #c9c9c9;
-}
-
-article h3 {
-    color: rgba(0, 0, 0, 0.8);
-    font-size: 24px;
-    margin: 40px 0 16px 0;
-}
-
-article p {
-    margin: 20px 0;
-}
-
-aside {
-    position: absolute;
-    right: 0;
-    top: 60px;
-    width: 245px;
-    padding-left: 28px;
-}
-
-=======
 }
 
 h2 {
@@ -307,7 +158,6 @@ aside {
     padding-left: 28px;
 }
 
->>>>>>> samples-template/master
 aside select {
     display: block;
     border-radius: 0;
@@ -320,13 +170,8 @@ aside select {
 aside .nav {
     padding: 10px 0;
     margin: 20px 0;
-<<<<<<< HEAD
-    border-top: 1px solid #DDD;
-    border-bottom: 1px solid #DDD;
-=======
     /*border-top: 1px solid #DDD;*/
     /*border-bottom: 1px solid #DDD;*/
->>>>>>> samples-template/master
 }
 
 @media only screen and (max-width : 760px) {
@@ -424,15 +269,9 @@ aside .nav {
 h4.navheading {
     text-transform: uppercase;
     padding: 0 0 10px 20px;
-<<<<<<< HEAD
-    margin-left: -28px;
-    display: inline-block;
-    border-bottom: 1px #c9c9c9 solid;
-=======
     margin-left: -22px;
     display: inline-block;
     /*border-bottom: 1px #c9c9c9 solid;*/
->>>>>>> samples-template/master
     font-size: 16px;
 }
 
@@ -459,11 +298,7 @@ li.navlink a:hover {
 
 li.navlink_current {
     line-height: 30px;
-<<<<<<< HEAD
-    list-style-image: url('../images/common/indicator-arrow.png') !important;
-=======
     /*list-style-image: url('../images/common/indicator-arrow.png') !important;*/
->>>>>>> samples-template/master
     margin-left: -8px;
     padding-left: 8px;
 }
@@ -525,35 +360,6 @@ tr:first-child th, tr:first-child td{
     border-top: 0;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-h4.navheading a {color:#003b74; text-decoration: none;}
-ul.navlist {list-style: none; margin-left: 0px;}
-li.navlink a {color:#003b74; text-decoration:none;}
-li.navlink a:hover {font-weight:700;}
-li.navlink_current {list-style-image: url('../images/common/indicator-arrow.png') !important;}
-li.navlink_current a {color:#003b74; text-decoration:none; font-weight:700;}
-
-h4.navheading_api {
-  color: #636363;
-  text-transform: uppercase;
-  padding: 0 0 5px 20px;
-  margin-left: -20px;
-  display: inline-block;
-  border-bottom: 1px #c9c9c9 solid;
-}
-
-h4.navheading_api a {color:#003b74; text-decoration: none;}
-ul.navlist_api {list-style: none; margin-left: 0; margin-bottom: 10px;}
-li.navlink_api a {color:#003b74; text-decoration:none;}
-li.navlink_api a:hover {font-weight:700;}
-
-
-/* Landing Page Headings
-================================================== */
-=======
-=======
->>>>>>> samples-template/master
 /*******************************************************************************
 * Lists
 */
@@ -569,10 +375,6 @@ ol ol li, ol ul li {margin-bottom: 6px; }
 /*******************************************************************************
 * Landing pages
 */
-<<<<<<< HEAD
->>>>>>> samples-template/master
-=======
->>>>>>> samples-template/master
 h2.nolineheading { margin-top:0; padding-top:0; border-top:none; }
 h3.nolineheading { margin-top:0; padding-top:0; border-top:none;}
 
