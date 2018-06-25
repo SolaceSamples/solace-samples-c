@@ -9,7 +9,7 @@ The "Getting Started" tutorials will get you up to speed and sending messages wi
 
 ## Contents
 
-This repository contains code and matching tutorial walk throughs for five different basic Solace messaging patterns. For a nice introduction to the Solace API and associated tutorials, check out the [tutorials home page](https://solacesamples.github.io/solace-samples-c/).
+This repository contains code and matching tutorial walk throughs for five different basic Solace messaging patterns. For a nice introduction to the Solace API and associated tutorials, check out the [tutorials home page](https://dev.solace.com/samples/solace-samples-c/).
 
 ## Checking out and Building
 
@@ -42,7 +42,7 @@ $ LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH ./HelloWorldSub <<HOST_ADDRESS>>
 
 ```
 
-See the [tutorials](https://solacesamples.github.io/solace-samples-c/) for more details.
+See the [tutorials](https://dev.solace.com/samples/solace-samples-c/) for more details.
 
 ## Contributing
 
