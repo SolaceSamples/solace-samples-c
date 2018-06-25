@@ -1,0 +1,14 @@
+# Site settings
+title: Solace Samples C
+summary: These tutorials get you up to speed sending and receiving messages with Solace technology.
+baseurl: "/solace-samples-c"
+repository: https://github.com/SolaceSamples/solace-samples-c
+
+# Also see _includes/intro.html to customize the description which gets included in index.html.
+
+# Links
+links-downloads: //dev.solace.com/downloads/
+links-community: //dev.solace.com/community/
+links-solaceCloud-setup: //cloud.solace.com/create-messaging-service/
+docs-core-concepts: //docs.solace.com/Features/Core-Concepts.htm
+docs-api-ref: //docs.solace.com/API-Developer-Online-Ref-Documentation/c/index.html

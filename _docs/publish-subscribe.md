@@ -36,8 +36,8 @@ The goal of this tutorial is to demonstrate the most basic messaging interaction
 2.  How to subscribe to a topic and receive a message
 
 
-{% include solaceMessaging.md %}
-{% include solaceApi.md %}
+{% include_relative assets/solaceMessaging.md %}
+{% include_relative assets/solaceApi.md %}
 
 ## Connecting to the Solace message router
 
@@ -161,7 +161,7 @@ At this point your client is connected to the Solace message router. You can use
 
 This tutorial is uses "Direct" messages which are at most once delivery messages. So first, let's express interest in the messages by subscribing to a Solace topic. Then you can look at publishing a matching message and see it received.  
 
-![]({{ site.baseurl }}/images/pub-sub-receiving-message-300x134.png)
+![]({{ site.baseurl }}/assets/images/pub-sub-receiving-message-300x134.png)
 
 With a session connected in the previous step, then you must subscribe to a topic in order to express interest in receiving messages. This tutorial uses the topics "tutorial/topic".
 
@@ -185,7 +185,7 @@ while ( msgCount < 1 ) {
 
 Now it is time to send a message to the waiting consumer.  
 
-![]({{ site.baseurl }}/images/pub-sub-sending-message-300x134.png)
+![]({{ site.baseurl }}/assets/images/pub-sub-sending-message-300x134.png)
 
 To send a message, you must create a message and a topic destination. This tutorial will send a Solace binary message with contents "Hello world!". Then you must send the message to the Solace message router.
 
