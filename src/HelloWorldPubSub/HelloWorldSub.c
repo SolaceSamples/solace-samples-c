@@ -72,7 +72,7 @@ main ( int argc, char *argv[] )
     solClient_session_createFuncInfo_t sessionFuncInfo = SOLCLIENT_SESSION_CREATEFUNC_INITIALIZER;
 
     /* Session Properties */
-    const char     *sessionProps[50];
+    const char     *sessionProps[50] = {0,};
     int             propIndex = 0;
     char *username,*password,*vpnname,*host;
 
