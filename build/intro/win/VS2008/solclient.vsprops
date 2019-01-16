@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="solclient"
+	>
+	<UserMacro
+		Name="SolclientBasePath"
+		Value="$(SolutionDir)..\..\..\..\"
+	/>
+	<UserMacro
+		Name="SolclientPreprocessor"
+		Value="_CRT_SECURE_NO_WARNINGS;SOLCLIENT_CONST_PROPERTIES;PROVIDE_LOG_UTILITIES"
+	/>
+</VisualStudioPropertySheet>
