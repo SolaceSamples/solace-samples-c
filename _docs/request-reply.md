@@ -17,7 +17,7 @@ This tutorial outlines both roles in the request-response message exchange patte
 
 This tutorial assumes the following:
 
-*   You are familiar with Solace [core concepts]({{ site.docs-core-concepts }}){:target="_top"}.
+*   You are familiar with Solace PubSub+ [core concepts]({{ site.docs-core-concepts }}){:target="_top"}.
 *   You have access to Solace messaging with the following configuration details:
     *   Connectivity information for a Solace message-VPN
     *   Enabled client username and password

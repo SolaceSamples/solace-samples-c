@@ -1,7 +1,7 @@
 
 ## Get Solace Messaging
 
-This tutorial requires access Solace messaging and requires that you know several connectivity properties about your Solace messaging. Specifically you need to know the following:
+This tutorial requires access Solace PubSub+ messaging and requires that you know several connectivity properties about your Solace messaging. Specifically you need to know the following:
 
 <table>
   <tr>
@@ -12,12 +12,12 @@ This tutorial requires access Solace messaging and requires that you know severa
   <tr>
     <td>Host</td>
     <td>String</td>
-    <td>This is the address clients use when connecting to the Solace messaging to send and receive messages. (Format: <code>DNS_NAME:Port</code> or <code>IP:Port</code>)</td>
+    <td>This is the address clients use when connecting to the PubSub+ messaging to send and receive messages. (Format: <code>DNS_NAME:Port</code> or <code>IP:Port</code>)</td>
   </tr>
   <tr>
     <td>Message VPN</td>
     <td>String</td>
-    <td>The Solace message router Message VPN that this client should connect to. </td>
+    <td>The PubSub+ message router Message VPN that this client should connect to. </td>
   </tr>
   <tr>
     <td>Client Username</td>
@@ -31,11 +31,11 @@ This tutorial requires access Solace messaging and requires that you know severa
   </tr>
 </table>
 
-There are several ways you can get access to Solace Messaging and find these required properties.
+There are several ways you can get access to PubSub+ Messaging and find these required properties.
 
-### Option 1: Use Solace Cloud
+### Option 1: Use PubSub+ Cloud
 
-* Follow [these instructions]({{ site.links-solaceCloud-setup }}){:target="_top"} to quickly spin up a cloud-based Solace messaging service for your applications.
+* Follow [these instructions]({{ site.links-solaceCloud-setup }}){:target="_top"} to quickly spin up a cloud-based PubSub+ messaging service for your applications.
 * The messaging connectivity information is found in the service details in the connectivity tab (shown below). You will need:
     * Host:Port (use the SMF URI)
     * Message VPN
@@ -44,20 +44,20 @@ There are several ways you can get access to Solace Messaging and find these req
 
 ![]({{ site.baseurl }}/assets/images/connectivity-info.png)
 
-### Option 2: Start a Solace VMR
+### Option 2: Start a PubSub+ Software
 
-* Follow [these instructions]({{ site.docs-vmr-setup }}){:target="_top"} to start the Solace VMR in leading Clouds, Container Platforms or Hypervisors. The tutorials outline where to download and how to install the Solace VMR.
+* Follow [these instructions]({{ site.docs-vmr-setup }}){:target="_top"} to start the PubSub+ Software in leading Clouds, Container Platforms or Hypervisors. The tutorials outline where to download and how to install the PubSub+ Software.
 * The messaging connectivity information are the following:
     * Host: \<public_ip> (IP address assigned to the VMR in tutorial instructions)
     * Message VPN: default
     * Client Username: sampleUser (can be any value)
     * Client Password: samplePassword (can be any value)
 
-    Note: By default, the Solace VMR "default" message VPN has authentication disabled.
+    Note: By default, the PubSub+ Software "default" message VPN has authentication disabled.
 
-### Option 3: Get access to a Solace appliance
+### Option 3: Get access to a PubSub+ Appliance
 
-* Contact your Solace appliance administrators and obtain the following:
-    * A Solace Message-VPN where you can produce and consume direct and persistent messages
+* Contact your PubSub+ appliance administrators and obtain the following:
+    * A PubSub+ Message-VPN where you can produce and consume direct and persistent messages
     * The host name or IP address of the Solace appliance hosting your Message-VPN
     * A username and password to access the Solace appliance

@@ -1,7 +1,7 @@
 ---
 layout: tutorials
 title: Publish/Subscribe
-summary: Learn how to set up pub/sub on a Solace VMR.
+summary: Learn how to publish and subscribe to messages.
 icon: I_dev_P+S.svg
 links:
     - label: TopicPublisher.c
@@ -12,23 +12,23 @@ links:
       link: /blob/master/src/intro/os.h
 ---
 
-This tutorial will introduce you to the fundamentals of the Solace API by connecting a client, adding a topic subscription and sending a message matching this topic subscription. This forms the basis for any publish / subscribe message exchange.
+This tutorial will introduce you to the fundamentals of the Solace PubSub+ API by connecting a client, adding a topic subscription and sending a message matching this topic subscription. This forms the basis for any publish / subscribe message exchange.
 
 ## Assumptions
 
 This tutorial assumes the following:
 
-*   You are familiar with Solace [core concepts]({{ site.docs-core-concepts }}){:target="_top"}.
-*   You have access to Solace messaging with the following configuration details:
-    *   Connectivity information for a Solace message-VPN
+*   You are familiar with Solace PubSub+ [core concepts]({{ site.docs-core-concepts }}){:target="_top"}.
+*   You have access to PubSub+ messaging with the following configuration details:
+    *   Connectivity information for a PubSub+ message-VPN
     *   Enabled client username and password
 
-One simple way to get access to Solace messaging quickly is to create a messaging service in Solace Cloud [as outlined here]({{ site.links-solaceCloud-setup}}){:target="_top"}. You can find other ways to get access to Solace messaging below.
+One simple way to get access to PubSub+ messaging quickly is to create a messaging service in PubSub+ Cloud [as outlined here]({{ site.links-solaceCloud-setup}}){:target="_top"}. You can find other ways to get access to PubSub+ messaging below.
 
 
 ## Goals
 
-The goal of this tutorial is to demonstrate the most basic messaging interaction using Solace. This tutorial will show you:
+The goal of this tutorial is to demonstrate the most basic messaging interaction using Solace PubSub+. This tutorial will show you:
 
 1.  How to build and send a message on a topic
 2.  How to subscribe to a topic and receive a message
@@ -40,7 +40,7 @@ The goal of this tutorial is to demonstrate the most basic messaging interaction
 
 ## Receiving a message
 
-This tutorial is uses "Direct" messages which are at most once delivery messages. So first, let's express interest in the messages by subscribing to a Solace topic. Then you can look at publishing a matching message and see it received.  
+This tutorial is uses "Direct" messages which are at most once delivery messages. So first, let's express interest in the messages by subscribing to a PubSub+ topic. Then you can look at publishing a matching message and see it received.  
 
 ![]({{ site.baseurl }}/assets/images/pub-sub-receiving-message-300x134.png)
 
@@ -68,7 +68,7 @@ Now it is time to send a message to the waiting consumer.
 
 ![]({{ site.baseurl }}/assets/images/pub-sub-sending-message-300x134.png)
 
-To send a message, you must create a message and a topic destination. This tutorial will send a Solace binary message with contents "Hello world!". Then you must send the message to the Solace message router.
+To send a message, you must create a message and a topic destination. This tutorial will send a PubSub+ binary message with contents "Hello world!". Then you must send the message to the PubSub+ message router.
 
 ```cpp
 /* Message */
@@ -100,9 +100,9 @@ solClient_msg_free ( &msg_p );
 
 In the SolClient API, messages are allocated and freed from an internal API message pool for greatest performance and efficiency. Therefore as shown, messages must be acquired by calls to solClient_msg_alloc and then later freed back to the pool by calls to solClient_msg_free.
 
-The minimum properties required to create a SolClient message that can be sent is to set the delivery mode, queue or topic destination, and message contents as shown in the above code. Once the message is created it is sent to the Solace message router with a call to solClient_session_sendMsg.
+The minimum properties required to create a SolClient message that can be sent is to set the delivery mode, queue or topic destination, and message contents as shown in the above code. Once the message is created it is sent to the PubSub+ message router with a call to solClient_session_sendMsg.
 
-At this point the producer has sent a message to the Solace message router and your waiting consumer will have received the message and printed its contents to the screen.
+At this point the producer has sent a message to the PubSub+ message router and your waiting consumer will have received the message and printed its contents to the screen.
 
 ## Summarizing
 
@@ -122,7 +122,7 @@ The OS source code simply provides platform abstraction. The subscriber sample m
 
 ### Running the Samples
 
-If you start the `TopicSubscriber` with the required arguments of your Solace messaging, it will connect and wait for a message.
+If you start the `TopicSubscriber` with the required arguments of your PubSub+ messaging, it will connect and wait for a message.
 
 ```
 bin$ . ./setenv.sh 
@@ -154,7 +154,7 @@ Binary Attachment:   len=12
 Exiting.
 ```
 
-The received message is printed to the screen. The message contents was "Hello world!" as expected and shown in the contents of the message dump along with additional information about the Solace message that was received.
+The received message is printed to the screen. The message contents was "Hello world!" as expected and shown in the contents of the message dump along with additional information about the PubSub+ message that was received.
 
 You have now successfully connected a client, subscribed to a topic and exchanged messages using this topic.
 

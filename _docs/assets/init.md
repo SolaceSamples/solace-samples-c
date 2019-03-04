@@ -1,6 +1,6 @@
-## Connecting to the Solace message router
+## Connecting to the Solace PubSub+ message router
 
-In order to send or receive messages, an application must connect a Solace session. The Solace session is the basis for all client communication with the Solace message router.
+In order to send or receive messages, an application must connect a PubSub+ session. The PubSub+ session is the basis for all client communication with the PubSub+ message router.
 
 In the Solace messaging API for C (SolClient), a few distinct steps are required to create and connect a Solace session.
 
@@ -65,7 +65,7 @@ solClient_context_create ( SOLCLIENT_CONTEXT_PROPS_DEFAULT_WITH_CREATE_THREAD,
 
 ### Session Creation
 
-Finally a session is needed to actually connect to the Solace message router. This is accomplished by creating a properties array and connecting the session.
+Finally a session is needed to actually connect to the PubSub+ message router. This is accomplished by creating a properties array and connecting the session.
 
 ```cpp
 /* Session */
@@ -112,6 +112,6 @@ solClient_session_connect ( session_p );
 printf ( "Connected.\n" );
 ```
 
-When creating the session, the factory method takes the session properties, the session pointer and information about the session callback functions. The API then creates the session within the supplied context and returns a reference in the session pointer. The final call to solClient_session_connect establishes the connection to the Solace message router which makes the session ready for use.
+When creating the session, the factory method takes the session properties, the session pointer and information about the session callback functions. The API then creates the session within the supplied context and returns a reference in the session pointer. The final call to solClient_session_connect establishes the connection to the PubSub+ message router which makes the session ready for use.
 
-At this point your client is connected to the Solace message router. You can use SolAdmin to view the client connection and related details.
+At this point your client is connected to the PubSub+ message router. You can use SolAdmin to view the client connection and related details.

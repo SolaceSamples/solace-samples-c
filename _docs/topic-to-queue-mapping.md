@@ -1,7 +1,7 @@
 ---
 layout: tutorials
 title: Topic to Queue Mapping
-summary: Learn how to map topics to Solace queues.
+summary: Learn how to map topics to PubSub+ queues.
 icon: I_dev_topic2q.svg
 links:
     - label: TopicToQueueMapping.c
@@ -10,7 +10,7 @@ links:
       link: /blob/master/src/intro/common.c
 ---
 
-This tutorial builds on the basic concepts introduced in the [Persistence with Queues tutorial]({{ site.baseurl }}/persistence-with-queues) and will show you how to make use of one of Solace’s advanced queueing features called “Topic to Queue Mapping.”
+This tutorial builds on the basic concepts introduced in the [Persistence with Queues tutorial]({{ site.baseurl }}/persistence-with-queues) and will show you how to make use of one of PubSub+’s advanced queueing features called “Topic to Queue Mapping.”
 
 In addition to spooling messages published directly to the queue, it is possible to add one or more topic subscriptions to a durable queue so that messages published to those topics are also delivered to and spooled by the queue. This is a powerful feature that enables queues to participate equally in point to point and publish / subscribe messaging models. More details about the [“Topic to Queue Mapping” feature here]({{ site.docs-topic-queue}}){:target="_top"}.
 
@@ -18,25 +18,25 @@ The following diagram illustrates this feature.
 
 <img src="{{ site.baseurl }}/assets/images/topic-to-queue-mapping-detail.png" width="500" height="206" />
 
-If you have a durable queue named `Q`, it will receive messages published directly to the queue destination named `Q`. However, it is also possible to add subscriptions to this queue in the form of topics. This example adds topics `A` and `B`. Once these subscriptions are added, the queue will start receiving messages published to the topic destinations `A` and `B`. When you combine this with the wildcard support provided by Solace topics this opens up a number of interesting use cases.
+If you have a durable queue named `Q`, it will receive messages published directly to the queue destination named `Q`. However, it is also possible to add subscriptions to this queue in the form of topics. This example adds topics `A` and `B`. Once these subscriptions are added, the queue will start receiving messages published to the topic destinations `A` and `B`. When you combine this with the wildcard support provided by PubSub+ topics this opens up a number of interesting use cases.
 
 ## Assumptions
 
 This tutorial assumes the following:
 
-*   You have access to Solace messaging with the following configuration details:
-    *   Connectivity information for a Solace message-VPN configured for guaranteed messaging support
+*   You have access to PubSub+ messaging with the following configuration details:
+    *   Connectivity information for a PubSub+ message-VPN configured for guaranteed messaging support
     *   Enabled client username and password
     *   Client-profile enabled with guaranteed messaging permissions.
 
-One simple way to get access to Solace messaging quickly is to create a messaging service in Solace Cloud [as outlined here]({{ site.links-solaceCloud-setup}}){:target="_top"}. You can find other ways to get access to Solace messaging below.
+One simple way to get access to PubSub+ messaging quickly is to create a messaging service in PubSub+ Cloud [as outlined here]({{ site.links-solaceCloud-setup}}){:target="_top"}. You can find other ways to get access to Solace messaging below.
 
 ## Goals
 
 The goal of this tutorial is to understand the following:
 
 *   How to add topic subscriptions to a queue. Two ways are shown in this case.
-*   How to interrogate the Solace message router to confirm capabilities.
+*   How to interrogate the PubSub+ message router to confirm capabilities.
 *   How to delete a queue.
 
 
