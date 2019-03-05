@@ -159,7 +159,7 @@ The full source code for this example is available in [GitHub]({{ site.repositor
 
 ### Building
 
-{% include_relative assets/init.md %}
+{% include_relative assets/building.md %}
 
 ### Running the Samples
 

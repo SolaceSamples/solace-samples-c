@@ -222,7 +222,7 @@ Combining the example source code shown above results in the following source co
 
 ## Building
 
-{% include_relative assets/init.md %}
+{% include_relative assets/building.md %}
 
 ### Running the Samples
 

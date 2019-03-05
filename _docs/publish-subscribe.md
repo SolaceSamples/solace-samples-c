@@ -118,7 +118,7 @@ The OS source code simply provides platform abstraction. The subscriber sample m
 
 ## Building
 
-{% include_relative assets/init.md %}
+{% include_relative assets/building.md %}
 
 ### Running the Samples
 
