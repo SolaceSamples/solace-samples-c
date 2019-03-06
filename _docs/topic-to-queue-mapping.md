@@ -29,7 +29,7 @@ This tutorial assumes the following:
     *   Enabled client username and password
     *   Client-profile enabled with guaranteed messaging permissions.
 
-One simple way to get access to PubSub+ messaging quickly is to create a messaging service in PubSub+ Cloud [as outlined here]({{ site.links-solaceCloud-setup}}){:target="_top"}. You can find other ways to get access to Solace messaging below.
+One simple way to get access to PubSub+ messaging quickly is to create a messaging service in PubSub+ Cloud [as outlined here]({{ site.links-solaceCloud-setup}}){:target="_top"}. You can find other ways to get access to PubSub+ messaging below.
 
 ## Goals
 
