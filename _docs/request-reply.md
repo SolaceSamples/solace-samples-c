@@ -179,7 +179,7 @@ Received reply message, result = 1.800000
 ```
 
 ```
-bin$ ./BasicRequester -u <client-username>@<message-vpn> -c <protocol>://<msg_backbone_ip>:<port> -p <password> -t <topic>
+bin$ ./BasicRequestor -u <client-username>@<message-vpn> -c <protocol>://<msg_backbone_ip>:<port> -p <password> -t <topic>
 Sending request for 9 PLUS 5
 Received reply message, result = 14.000000
 Sending request for 9 MINUS 5

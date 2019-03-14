@@ -10,7 +10,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QueueSubscriber", "QueueSub
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicReplier", "BasicReplier\BasicReplier.vcproj", "{FFA7EBE5-1B3F-43C8-BB12-88AC58257DB9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicRequester", "BasicRequester\BasicRequester.vcproj", "{F2683C41-74AD-4F76-A0B0-1F991CD35AAB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicRequestor", "BasicRequestor\BasicRequestor.vcproj", "{F2683C41-74AD-4F76-A0B0-1F991CD35AAB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TopicToQueueMapping", "TopicToQueueMapping\TopicToQueueMapping.vcproj", "{4E649416-9131-4b90-9A91-7B8C837561B7}"
 EndProject
