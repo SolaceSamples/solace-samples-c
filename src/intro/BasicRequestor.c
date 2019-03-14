@@ -1,16 +1,16 @@
-/** @example Intro/BasicRequester.c
+/** @example Intro/BasicRequestor.c
  */
 
 /*
- * This sample shows how to implement a Requester for direct Request-Reply messaging, where 
+ * This sample shows how to implement a Requestor for direct Request-Reply messaging, where 
  *
- *    BasicRequester: A message Endpoint that sends a request message and waits to receive
+ *    BasicRequestor: A message Endpoint that sends a request message and waits to receive
  *                       a reply message as a response.
  *    BasicReplier:   A message Endpoint that waits to receive a request message and responses
  *                       to it by sending a reply message.
  * 
  *  |----------------|  ---RequestTopic --> |---------------|
- *  | BasicRequester |                      | BasicReplier  |
+ *  | BasicRequestor |                      | BasicReplier  |
  *  |----------------|  <--ReplyToTopic---- |---------------|
  *
  * Copyright 2013-2019 Solace Corporation. All rights reserved.
@@ -156,7 +156,7 @@ main ( int argc, char *argv[] )
     int             propIndex = 0;
 
     /************ Basic initialization *********************/
-    printf ( "\nBasicRequester.c (Copyright 2013-2019 Solace Corporation. All rights reserved.)\n" );
+    printf ( "\nBasicRequestor.c (Copyright 2013-2019 Solace Corporation. All rights reserved.)\n" );
 
     /*************************************************************************
      * Parse command options

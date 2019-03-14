@@ -4,7 +4,7 @@
 	Version="9.00"
 	Name="TopicToQueueMapping"
 	ProjectGUID="{4E649416-9131-4b90-9A91-7B8C837561B7}"
-	RootNamespace="RRDirectRequester"
+	RootNamespace="TopicToQueueMapping"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>

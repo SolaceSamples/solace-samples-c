@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="BasicRequester"
+	Name="BasicRequestor"
 	ProjectGUID="{F2683C41-74AD-4F76-A0B0-1F991CD35AAB}"
-	RootNamespace="BasicRequester"
+	RootNamespace="BasicRequestor"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -681,7 +681,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\..\src\intro\BasicRequester.c"
+				RelativePath="..\..\..\..\..\src\intro\BasicRequestor.c"
 				>
 			</File>
 		</Filter>
