@@ -117,9 +117,6 @@ main ( int argc, char *argv[] )
     const char     *provProps[20] = {0, };
     int             provIndex;
 
-    /* Queue Network Name to be used with "solClient_session_endpointProvision()" */
-    char            qNN[80];
-
     if ( argc < 6 ) {
         printf ( "Usage: QueueSubscriber <msg_backbone_ip:port> <vpn> <client-username> <password> <queue>\n" );
         return -1;
@@ -207,7 +204,7 @@ main ( int argc, char *argv[] )
                                           session_p,
                                           SOLCLIENT_PROVISION_FLAGS_WAITFORCONFIRM|
                                           SOLCLIENT_PROVISION_FLAGS_IGNORE_EXIST_ERRORS,
-                                          NULL, qNN, sizeof ( qNN ) );
+                                          NULL, NULL, 0 );
 
     /*************************************************************************
      * Create a Flow
