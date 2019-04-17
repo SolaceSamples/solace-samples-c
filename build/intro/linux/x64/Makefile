@@ -28,7 +28,7 @@ $(shell mkdir -p $(OUTPUTDIR))
 %.o:	%.c
 	$(CXX) $(COMPILEFLAG)  $(SIXTY_FOUR_COMPAT) -c $< -o $(OUTPUTDIR)/$@
 
-EXECS:= TopicPublisher TopicSubscriber QueuePublisher QueueSubscriber BasicReplier BasicRequestor TopicToQueueMapping
+EXECS:= TopicPublisher TopicSubscriber QueuePublisher QueueSubscriber BasicReplier BasicRequestor TopicToQueueMapping MessageReplay
 
 all: $(EXECS)
 
@@ -51,6 +51,9 @@ QueuePublisher : QueuePublisher.o $(DEPENDS)
 	$(CXX) -o $(OUTPUTDIR)/$@ $(OUTPUTDIR)/$^ $(LINKFLAGS)
 
 QueueSubscriber : QueueSubscriber.o $(DEPENDS)
+	$(CXX) -o $(OUTPUTDIR)/$@ $(OUTPUTDIR)/$^ $(LINKFLAGS)
+
+MessageReplay : MessageReplay.o $(DEPENDS)
 	$(CXX) -o $(OUTPUTDIR)/$@ $(OUTPUTDIR)/$^ $(LINKFLAGS)
 
 BasicReplier : common.o BasicReplier.o $(DEPENDS)
