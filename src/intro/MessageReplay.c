@@ -1,4 +1,4 @@
-/** @example ex/Intro/MessageReplaySubscriber.c
+/** @example MessageReplay.c
 */
 
 /*
@@ -14,7 +14,7 @@
  *  source is authorized unless specifically stated in the
  *  contracts referred to above.
  *
- *  MessageReplaySubscriber
+ *  MessageReplay
  *
  *  This sample demonstrates the message replay feature in the Solace Message
  *  Router.
@@ -100,6 +100,19 @@ flowEventCallback ( solClient_opaqueFlow_pt opaqueFlow_p, solClient_flow_eventCa
         flowErrorInfo_p->responseCode = errorInfo_p->responseCode;
         flowErrorInfo_p->subCode = errorInfo_p->subCode;
         strncpy(errorInfo_p->errorStr, flowErrorInfo_p->errorStr, sizeof(flowErrorInfo_p->errorStr));
+        switch (errorInfo_p->subCode) {
+            case SOLCLIENT_SUBCODE_REPLAY_STARTED:
+            case SOLCLIENT_SUBCODE_REPLAY_FAILED:
+            case SOLCLIENT_SUBCODE_REPLAY_CANCELLED:
+            case SOLCLIENT_SUBCODE_REPLAY_LOG_MODIFIED:
+            case SOLCLIENT_SUBCODE_REPLAY_START_TIME_NOT_AVAILABLE:
+            case SOLCLIENT_SUBCODE_REPLAY_MESSAGE_UNAVAILABLE:
+            case SOLCLIENT_SUBCODE_REPLAY_MESSAGE_REJECTED:
+                break;
+            default:
+                break;
+        }
+
     }
 }
 
@@ -161,7 +174,7 @@ main ( int argc, char *argv[] )
     int             provIndex;
 
     if ( argc < 6 ) {
-        printf ( "Usage: MessageReplaySubscriber <msg_backbone_ip:port> <vpn> <client-username> <password> <queue>\n" );
+        printf ( "Usage: MessageReplay <msg_backbone_ip:port> <vpn> <client-username> <password> <queue>\n" );
         return -1;
     }
 
