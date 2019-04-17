@@ -36,6 +36,8 @@ To check out the project and build it, do the following:
 ```
     build$ ./build_intro_linux_xxx.sh
 ```
+Note: it s important to set the environment on Linux, see in next step [Running the Samples](#running-the-samples).
+
 3. On Mac:
 ```
     build$ ./build_intro_mac_xxx.sh
@@ -52,7 +54,7 @@ To try individual samples, build the project from source and then run samples li
 
 2. On Linux:
 ```
-    bin$ . ./setenv.sh
+    bin$ source ./setenv.sh
     bin$ ./TopicPublisher
 ```
 

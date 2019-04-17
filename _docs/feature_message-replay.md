@@ -4,7 +4,7 @@ title: Message Replay
 summary: Learn how to make use of Message Replay via the Solace Java client library
 links:
     - label: MessageReplay.java
-      link: /blob/master/src/main/java/com/solace/samples/features/MessageReplay.java
+      link: /blob/master/src/intro/MessageReplay.java
 ---
 
 In this introduction we show you how a client can initiate and process the replay of previously published messages, as well as deal with an externally initiated replay.
@@ -86,17 +86,17 @@ flowProps[propIndex++] = SOLCLIENT_FLOW_PROP_BIND_NAME;
 flowProps[propIndex++] = argv[5];         // queue name taken from input param
 :
 flowProps[propIndex++] = SOLCLIENT_FLOW_PROP_REPLAY_START_LOCATION;
-flowProps[propIndex] = SOLCLIENT_FLOW_PROP_REPLAY_START_LOCATION_BEGINNING;
+flowProps[propIndex++] = SOLCLIENT_FLOW_PROP_REPLAY_START_LOCATION_BEGINNING;
 :
 /**************************************************************
  * NULL terminating the flow properties array
  **************************************************************/
 flowProps[propIndex++] = NULL;
 flowProps[propIndex] = NULL;
-
-solClient_errorInfo_t flowErrorInfo = {SOLCLIENT_SUBCODE_OK, 0, ""};
-flowFuncInfo.eventInfo.user_p = &flowErrorInfo;
-
+:
+/*
+ * Create and start a consumer flow
+ */
 int rc = solClient_session_createFlow ( ( char ** ) flowProps,
         session_p,
         &flow_p, &flowFuncInfo, sizeof ( flowFuncInfo ) );
@@ -105,115 +105,120 @@ printf ( "Waiting for 10 messages......\n" );
 
 ### Replay-related events
 
-`SOLCLIENT_FLOW_EVENT_DOWN_ERROR` is the replay-related event that has several Subcodes defined corresponding to various conditions, which can be processed in the `flowEventCallback` event handler.
+`SOLCLIENT_FLOW_EVENT_DOWN_ERROR` is the replay-related event that has several SubCodes defined corresponding to various conditions, which can be processed in the `flowEventCallback` callback.
 
-Note that in the Java API, the event handler is called on the main reactor thread, and manipulating the `session` from here isn't allowed because it can lead to deadlock. There will also be a related exception raised where the `session` can be manipulated in the exception handler, see the description in the next section. 
+Note that in the C API, the flow event callback is called on the main reactor thread, and manipulating the `session` from here isn't allowed because it can lead to deadlock. Instead we save the error information for processing by the main thread (see next section).
 
-Some of the important Subcodes:
-* REPLAY_STARTED - a replay has been administratively started from the message broker; the consumer flow is being disconnected.
-* REPLAY_START_TIME_NOT_AVAILABLE - the requested replay start date is before when the replay log was created, which is not allowed - see above section, "Initiating replay"
-* REPLAY_FAILED - indicates that an unexpected error has happened during replay
+Some of the important SubCodes:
+* SOLCLIENT_SUBCODE_REPLAY_STARTED - a replay has been administratively started from the message broker; the consumer flow is being disconnected.
+* SOLCLIENT_SUBCODE_REPLAY_START_TIME_NOT_AVAILABLE - the requested replay start date is before when the replay log was created, which is not allowed - see above section, "Initiating replay"
+* SOLCLIENT_SUBCODE_REPLAY_FAILED - indicates that an unexpected error has happened during replay
 
-For the definition of additional replay-related Subcodes refer to the `JCSMPErrorResponseSubcodeEx` class in the [Java API Reference]({{ site.docs-api-errorresponse-subcode-ex }}).
+For the definition of additional replay-related SubCodes refer to the `solClient_subCode` enumeration definitions in the [developer documentation]({{ site.docs-api-ref-enumerations }}){:target="_top"}.
 
-Here we will define the `ReplayFlowEventHandler` to process events with some more example Subcodes. The event handler will set `replayErrorResponseSubcode`, which will be used in the exception handler.
+Here is the code of the `flowEventCallback` callback to process events with some more example SubCodes. The event handler will set `flowErrorInfo_p->subCode`, which is the same as `flowErrorInfo.subCode` and will be used in the main thread.
 
-```java
-private volatile int replayErrorResponseSubcode = JCSMPErrorResponseSubcodeEx.UNKNOWN;
-class ReplayFlowEventHandler implements FlowEventHandler {
-    @Override
-    public void handleEvent(Object source, FlowEventArgs event) {
-        System.out.println("Consumer received flow event: " + event);
-        if (event.getEvent() == FlowEvent.FLOW_DOWN) {
-            if (event.getException() instanceof JCSMPErrorResponseException) {
-                JCSMPErrorResponseException ex = (JCSMPErrorResponseException) event.getException();
-                // Store the subcode for the exception handler
-                replayErrorResponseSubcode = ex.getSubcodeEx();
-                // Placeholder for additional event handling
-                // Do not manipulate the session from here
-                // onException() is the correct place for that
-                switch (replayErrorResponseSubcode) {
-                    case JCSMPErrorResponseSubcodeEx.REPLAY_STARTED:
-                    case JCSMPErrorResponseSubcodeEx.REPLAY_FAILED:
-                    case JCSMPErrorResponseSubcodeEx.REPLAY_CANCELLED:
-                    case JCSMPErrorResponseSubcodeEx.REPLAY_LOG_MODIFIED:
-                    case JCSMPErrorResponseSubcodeEx.REPLAY_START_TIME_NOT_AVAILABLE:
-                    case JCSMPErrorResponseSubcodeEx.REPLAY_MESSAGE_UNAVAILABLE:
-                    case JCSMPErrorResponseSubcodeEx.REPLAYED_MESSAGE_REJECTED:
-                        break;
-                    default:
-                        break;
-                }
-            }
+```cpp
+    static void
+flowEventCallback ( solClient_opaqueFlow_pt opaqueFlow_p, solClient_flow_eventCallbackInfo_pt eventInfo_p, void *user_p )
+{
+    /*
+     * The flow can not be destroyed and re-created from this callback,
+     *  so the errorInfo is only saved instead, and processed on the main loop.
+     */
+    solClient_errorInfo_pt errorInfo_p = solClient_getLastErrorInfo();
+    printf ( "flowEventCallbackFunc() called - %s; subCode: %s, responseCode: %d, reason: \"%s\"\n",
+            solClient_flow_eventToString ( eventInfo_p->flowEvent ),
+            solClient_subCodeToString ( errorInfo_p->subCode ), errorInfo_p->responseCode, errorInfo_p->errorStr );
+
+    if ( SOLCLIENT_FLOW_EVENT_DOWN_ERROR == eventInfo_p->flowEvent ) {
+        solClient_errorInfo_pt flowErrorInfo_p = (solClient_errorInfo_pt) user_p;
+        flowErrorInfo_p->responseCode = errorInfo_p->responseCode;
+        flowErrorInfo_p->subCode = errorInfo_p->subCode;
+        strncpy(errorInfo_p->errorStr, flowErrorInfo_p->errorStr, sizeof(flowErrorInfo_p->errorStr));
+        switch (errorInfo_p->subCode) {
+            case SOLCLIENT_SUBCODE_REPLAY_STARTED:
+            case SOLCLIENT_SUBCODE_REPLAY_FAILED:
+            case SOLCLIENT_SUBCODE_REPLAY_CANCELLED:
+            case SOLCLIENT_SUBCODE_REPLAY_LOG_MODIFIED:
+            case SOLCLIENT_SUBCODE_REPLAY_START_TIME_NOT_AVAILABLE:
+            case SOLCLIENT_SUBCODE_REPLAY_MESSAGE_UNAVAILABLE:
+            case SOLCLIENT_SUBCODE_REPLAY_MESSAGE_REJECTED:
+                break;
+            default:
+                break;
         }
+
     }
 }
 :
-private ReplayFlowEventHandler consumerEventHandler = null;
+flowFuncInfo.eventInfo.callback_p = flowEventCallback;
 :
-consumerEventHandler = new ReplayFlowEventHandler();
+/*
+ * flowErrorInfo will be set by the flow event handler callback
+ */
+solClient_errorInfo_t flowErrorInfo = {SOLCLIENT_SUBCODE_OK, 0, ""};
+flowFuncInfo.eventInfo.user_p = &flowErrorInfo;
 :
 /*
  * Create and start a consumer flow
  */
-consumer = session.createFlow(this, consumerFlowProps, null, consumerEventHandler);
+int rc = solClient_session_createFlow ( ( char ** ) flowProps,
+        session_p,
+        &flow_p, &flowFuncInfo, sizeof ( flowFuncInfo ) );
 ```
 
-### Replay-related Exceptions
+### Replay-related event handling
 
-If a replay-related event occurs, the flow is disconnected with `JCSMPFlowTransportUnsolicitedUnbindException`, and the exception handler is called if the `onException` method is overridden in the `XMLMessageListener` object that was passed to `createFlow()`.
+If a replay-related event occurs `flowErrorInfo.subCode` is set by the flow event handler callback.
 
-In this sample the `MessageReplay` class implements `XMLMessageListener`, hence `this` is passed as the first parameter to `createFlow()`.
+In this example two event SubCodes are handled in the main thread:
+* SOLCLIENT_SUBCODE_REPLAY_STARTED is handled by destroying the old flow and creating a new one. 
+* SOLCLIENT_SUBCODE_REPLAY_START_TIME_NOT_AVAILABLE is handled by adjusting the "replay start location" to replay all logged messages. 
 
-Here is the overridden `onException` method. In this example `JCSMPFlowTransportUnsolicitedUnbindException` is handled depending on the `replayErrorResponseSubcode`, which was set by the event handler (see previous section).
-* REPLAY_STARTED is handled by creating a new flow. 
-* REPLAY_START_TIME_NOT_AVAILABLE is handled by adjusting `ReplayStartLocation` to replay all logged messages. 
+```cpp
+if (flowErrorInfo.subCode == SOLCLIENT_SUBCODE_REPLAY_STARTED) {
+    printf ( "Router initiating replay, reconnecting flow to receive messages.\n" );
+    :
+    solClient_flow_destroy(&flow_p);
+    /*
+     * Remove the REPLAY_START_LOCATION from the flow properties array
+     * (replace it by NULL)
+     * as it would override the operator initiated replay request.
+     * NOTE: the REPLAY_START_LOCATION must be the last property
+     * for this to work.
+     */
+    propIndex = replayStartLocationIndex;
+    flowProps[propIndex++] = NULL;
+    flowProps[propIndex] = NULL;
 
-```
-@Override
-public void onException(JCSMPException exception) {
-    if (exception instanceof JCSMPFlowTransportUnsolicitedUnbindException) {
-        try {
-            if (exception instanceof JCSMPFlowTransportUnsolicitedUnbindException) {
-                switch (replayErrorResponseSubcode) {
-                    case JCSMPErrorResponseSubcodeEx.REPLAY_STARTED:
-                        System.out.println("Sample handling of an unsolicited unbind for replay initiated by recreating the flow");
-                        if (consumerFlowProps.getReplayStartLocation() != null) {
-                            consumerFlowProps.setReplayStartLocation(null);
-                        }
-                        consumer = session.createFlow(this, consumerFlowProps, null, consumerEventHandler);
-                        consumer.start();
-                        break;
-                    case JCSMPErrorResponseSubcodeEx.REPLAY_START_TIME_NOT_AVAILABLE:
-                        System.out.println("Start date was before the log creation date, initiating replay for all messages instead");
-                        consumerFlowProps.setReplayStartLocation(JCSMPFactory.onlyInstance().createReplayStartLocationBeginning());
-                        consumer = session.createFlow(this, consumerFlowProps, null, consumerEventHandler);
-                        consumer.start();
-                        break;
-                    default:
-                        break;
-                }
-                replayErrorResponseSubcode = JCSMPErrorResponseSubcodeEx.UNKNOWN; // reset after handling
-            }
-        }
-        catch (JCSMPException e) {
-            e.printStackTrace();
-        }
-    } else {
-        exception.printStackTrace();
-    }
+    rc = solClient_session_createFlow ( ( char ** ) flowProps,
+            session_p,
+            &flow_p, &flowFuncInfo, sizeof ( flowFuncInfo ) );
+    :
+} else if (flowErrorInfo.subCode == SOLCLIENT_SUBCODE_REPLAY_START_TIME_NOT_AVAILABLE) {
+    :
+    printf ( "Replay log does not cover requested time period, reconnecting flow for full log instead.\n" );
+    :
+    flowProps[replayStartLocationIndex + 1] = SOLCLIENT_FLOW_PROP_REPLAY_START_LOCATION_BEGINNING;
+    solClient_flow_destroy(&flow_p);
+    rc = solClient_session_createFlow ( ( char ** ) flowProps,
+            session_p,
+            &flow_p, &flowFuncInfo, sizeof ( flowFuncInfo ) );
+    :
 }
 ```
 
 ## Running the Sample
 
-Follow the instructions to [build the samples]({{ site.repository }}/blob/master/README.md#build-the-samples ).
+Follow the instructions to [check out and build the samples]({{ site.repository }}/blob/master/README.md#checking-out-and-building ).
 
 Before running this sample, be sure that Message Replay is enabled in the Message VPN. Also, messages must have been published to the replay log for the queue that is used. The "QueueProducer" sample can be used to create and publish messages to the queue. The "QueueConsumer" sample can be used to drain the queue so that replay is performed on an empty queue and observed by this sample. Both samples are from the [Persistence with Queues]({{ site.baseurl }}/persistence-with-queues) tutorial.
 
+From the "bin" directory:
 ```
-$ ./build/staged/bin/queueProducer <host:port> <client-username>@<message-vpn> [<client-password>]
-$ ./build/staged/bin/queueConsumer <host:port> <client-username>@<message-vpn> [<client-password>]
+$ ./QueuePublisher  <msg_backbone_ip:port> <vpn> <client-username> <password> Q/tutorial
+$ ./QueueSubscriber <msg_backbone_ip:port> <vpn> <client-username> <password> Q/tutorial
 ```
 
 At this point the replay log has one message.
@@ -222,14 +227,13 @@ You can now run this sample and observe the following, particularly the "message
 
 1. First, a client initiated replay is started when the flow connects. All messages are requested and replayed from the replay log.
 ```
-$ ./build/staged/bin/featureMessageReplay -h <host:port> -u <client-username>@<message-vpn> \
-                                          -q Q/tutorial [-w <client-passWord>]
+$ ./MessageReplay <msg_backbone_ip:port> <vpn> <client-username> <password> Q/tutorial
 ```
 2. After replay the application is able to receive live messages. Try it by publishing a new message using the "QueueProducer" sample from another terminal. Note that this message will also be added to the replay log.
 ```
-$ ./build/staged/bin/queueProducer <host:port> <client-username>@<message-vpn> [client-password]
+$ ./QueuePublisher  <msg_backbone_ip:port> <vpn> <client-username> <password> Q/tutorial
 ```
-3. Now start a replay from the message broker. The flow event handler monitors for a replay start event. When the message broker initiates a replay, the flow will see a DOWN_ERROR event with cause 'Replay Started'. This means an administrator has initiated a replay, and the application must destroy and re-create the flow to receive the replayed messages.
+3. Now start a replay from the message broker. The flow event callback monitors for a replay start event. When the message broker initiates a replay, the flow will see a `SOLCLIENT_FLOW_EVENT_DOWN_ERROR` event with SubCode `SOLCLIENT_SUBCODE_REPLAY_STARTED`. This means an administrator has initiated a replay, and the application must destroy and re-create the flow to receive the replayed messages.
 This will replay all logged messages including the live one published in step 2.
 
 ![alt text]({{ site.baseurl }}/assets/images/initiate-replay.png "Initiating Replay using Solace PubSub+ Manager")

@@ -12,6 +12,11 @@ links-community: //dev.solace.com/community/
 links-solaceCloud-setup: //solace.com/cloud/#pageblock_36103
 docs-core-concepts: //docs.solace.com/Features/Core-Concepts.htm
 docs-api-ref: //docs.solace.com/API-Developer-Online-Ref-Documentation/c/index.html
-docs-endpoints: //docs.solace.com/Features/Core-Concepts.htm
+docs-api-ref-enumerations: //docs.solace.com/API-Developer-Online-Ref-Documentation/c/globals_enum.html
+docs-endpoints: https://docs.solace.com/Messaging-Basics/Endpoints.htm#Endpoints
 docs-gm-rr: //docs.solace.com/Solace-Messaging-APIs/Request-Reply-Messaging.htm
 docs-topic-queue: //docs.solace.com/Features/Core-Concepts.htm#topic-queue-mapping
+docs-replay-use-cases: //docs.solace.com/Features/Message-Replay.htm#Applicat
+docs-replay-cli-config: //docs.solace.com/Configuring-and-Managing/Msg-Replay-Config.htm
+docs-psplus-manager: //docs.solace.com/Solace-PubSub-Manager/PubSub-Manager-Overview.htm
+docs-semp-api: //docs.solace.com/SEMP/Using-SEMP.htm
