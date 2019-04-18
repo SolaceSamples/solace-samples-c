@@ -1,10 +1,10 @@
 ---
 layout: features
 title: Message Replay
-summary: Learn how to make use of Message Replay via the Solace Java client library
+summary: Learn how to make use of Message Replay via the Solace C client library
 links:
-    - label: MessageReplay.java
-      link: /blob/master/src/intro/MessageReplay.java
+    - label: MessageReplay.c
+      link: /blob/master/src/intro/MessageReplay.c
 ---
 
 In this introduction we show you how a client can initiate and process the replay of previously published messages, as well as deal with an externally initiated replay.
@@ -23,7 +23,7 @@ It's important to note that when initiating replay, the message broker will disc
 
 A replay log must be created on the message broker for the Message VPN using [Message Replay CLI configuration]({{ site.docs-replay-cli-config }}) or using [Solace PubSub+ Manager]({{ site.docs-psplus-manager }}) administration console. Another option for configuration is to use the [SEMP API]({{ site.docs-semp-api }}).
 
-NOTE: Message Replay is supported on Solace PubSub+ 3530 and 3560 appliances running release 9.1 and greater, and on the Solace PubSub+ software message broker running release 9.1 and greater. Solace Java API version 10.5 or later is required.
+NOTE: Message Replay is supported on Solace PubSub+ 3530 and 3560 appliances running release 9.1 and greater, and on the Solace PubSub+ software message broker running release 9.1 and greater. Solace C API version 10.5 or later is required.
 
 ![alt text]({{ site.baseurl }}/assets/images/config-replay-log.png "Configuring Replay Log using Solace PubSub+ Manager")
 <br>
