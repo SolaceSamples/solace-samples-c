@@ -421,9 +421,8 @@ common_createQueue ( solClient_opaqueSession_pt session_p, const char *queueName
 
 
     if ( ( rc = solClient_session_endpointProvision ( (char**) props, session_p, ( SOLCLIENT_PROVISION_FLAGS_WAITFORCONFIRM | SOLCLIENT_PROVISION_FLAGS_IGNORE_EXIST_ERRORS ), NULL, /* correlationTag pointer */
-                                                      NULL,     /* don't need to know endpoint name */
-                                                      0 /* size of endpoint name storage */
-            ) ) == SOLCLIENT_FAIL ) {
+                                                      NULL,
+                                                      0 ) ) == SOLCLIENT_FAIL ) {
         common_handleError ( rc, "solClient_session_endpointProvision()" );
         return rc;
     }
