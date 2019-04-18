@@ -6,3 +6,4 @@
   - topic-to-queue-mapping
 
   features:
+  - feature_message-replay
