@@ -102,9 +102,6 @@ main ( int argc, char *argv[] )
     const char     *provProps[20] = {0, };
     int             provIndex;
 
-    /* Queue Network Name to be used with "solClient_session_endpointProvision()" */
-    char            qNN[80];
-
     /* Message */
     solClient_opaqueMsg_pt msg_p = NULL;
     solClient_destination_t destination;
@@ -203,7 +200,7 @@ main ( int argc, char *argv[] )
                                           session_p,
                                           SOLCLIENT_PROVISION_FLAGS_WAITFORCONFIRM|
                                           SOLCLIENT_PROVISION_FLAGS_IGNORE_EXIST_ERRORS,
-                                          NULL, qNN, sizeof ( qNN ) );
+                                          NULL, NULL, 0 );
 
     /*************************************************************************
      * Create a Flow
