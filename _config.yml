@@ -7,16 +7,16 @@ repository: https://github.com/SolaceSamples/solace-samples-c
 # Also see _includes/intro.html to customize the description which gets included in index.html.
 
 # Links
-links-downloads: //dev.solace.com/downloads/
-links-community: //dev.solace.com/community/
+links-downloads: //solace.com/downloads/
+links-community: //solace.community
 links-solaceCloud-setup: //solace.com/cloud/#pageblock_36103
-docs-core-concepts: //docs.solace.com/Features/Core-Concepts.htm
+docs-core-concepts: //docs.solace.com/PubSub-Basics/Core-Concepts.htm
 docs-api-ref: //docs.solace.com/API-Developer-Online-Ref-Documentation/c/index.html
 docs-api-ref-enumerations: //docs.solace.com/API-Developer-Online-Ref-Documentation/c/globals_enum.html
-docs-endpoints: https://docs.solace.com/Messaging-Basics/Endpoints.htm#Endpoints
+docs-endpoints: https://docs.solace.com/PubSub-Basics/Endpoints.htm
 docs-gm-rr: //docs.solace.com/Solace-Messaging-APIs/Request-Reply-Messaging.htm
-docs-topic-queue: //docs.solace.com/Features/Core-Concepts.htm#topic-queue-mapping
-docs-replay-use-cases: //docs.solace.com/Features/Message-Replay.htm#Applicat
+docs-topic-queue: //docs.solace.com/PubSub-Basics/Core-Concepts.htm
+docs-replay-use-cases: //docs.solace.com/Configuring-and-Managing/Message-Replay.htm
 docs-replay-cli-config: //docs.solace.com/Configuring-and-Managing/Msg-Replay-Config.htm
 docs-psplus-manager: //docs.solace.com/Solace-PubSub-Manager/PubSub-Manager-Overview.htm
 docs-semp-api: //docs.solace.com/SEMP/Using-SEMP.htm
