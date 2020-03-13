@@ -8,7 +8,7 @@ repository: https://github.com/SolaceSamples/solace-samples-c
 
 # Links
 links-downloads: //solace.com/downloads/
-links-community: //solace.com/support/
+links-community: //solace.community
 links-solaceCloud-setup: //solace.com/cloud/#pageblock_36103
 docs-core-concepts: //docs.solace.com/PubSub-Basics/Core-Concepts.htm
 docs-api-ref: //docs.solace.com/API-Developer-Online-Ref-Documentation/c/index.html
