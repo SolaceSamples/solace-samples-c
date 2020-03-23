@@ -162,7 +162,7 @@ main ( int argc, char *argv[] )
 
     solClient_session_topicUnsubscribeExt ( session_p,
                                             SOLCLIENT_SUBSCRIBE_FLAGS_WAITFORCONFIRM,
-                                            argv[4] );
+                                            argv[5] );
 
     /*************************************************************************
      * Cleanup
