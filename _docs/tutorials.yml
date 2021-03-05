@@ -1,9 +1,0 @@
-- title: C API Tutorials
-  tutorials:
-  - publish-subscribe
-  - persistence-with-queues
-  - request-reply
-  - topic-to-queue-mapping
-
-  features:
-  - feature_message-replay
