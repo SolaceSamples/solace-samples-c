@@ -22,7 +22,7 @@ LLSYS:=$(SIXTY_FOUR_COMPAT)
 VPATH:=$(CCSMPHOME)/src/intro
 OUTPUTDIR:=$(CCSMPHOME)/bin
 COMPILEFLAG:= $(COMPILEFLAG) $(INCDIRS) $(ARCHFLAGS) -DPROVIDE_LOG_UTILITIES -g
-LINKFLAGS:= $(LIBDIRS) -lsolclient /usr/local/lib/libssl.a /usr/local/lib/libcrypto.a $(LLSYS)
+LINKFLAGS:= $(LIBDIRS) -lsolclient /usr/lib/libssl.a /usr/lib/libcrypto.a $(LLSYS)
 
 $(shell mkdir -p $(OUTPUTDIR))
 
