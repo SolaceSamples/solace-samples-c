@@ -33,7 +33,7 @@ This repository contains code and matching tutorial walk throughs for the basic 
 ## Checking out and Building
 
 To check out the project and build it, do the following:
--dev
+
   1. `git clone` this GitHub repository
   2. `cd solace-samples-c`
  
