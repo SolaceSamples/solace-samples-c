@@ -13,10 +13,19 @@ This repository contains code and matching tutorial walk throughs for the basic 
 
 ## Prerequisites ##
 
-On Linux/Mac
+### On Alpine Linux
+- make
+- gcc compiler
+- musl
+- musl-dev
+- openssl
+- openssl-dev
+- libressl-dev
+
+### On Linux (non-alpine linux)/Mac
 - gcc compiler
 
-On Windows
+### On Windows
 - Visual Studio 2008 and above. (Tested on VS2008/2010/2013/2015)  
   (**Note:** To build 64-bit sample apps, please make sure that the x64 compiler is installed)
 - VS2008 redistributable installed. (For non-static build)
@@ -24,7 +33,7 @@ On Windows
 ## Checking out and Building
 
 To check out the project and build it, do the following:
-
+-dev
   1. `git clone` this GitHub repository
   2. `cd solace-samples-c`
  
@@ -32,17 +41,21 @@ To check out the project and build it, do the following:
 
 1. `cd build`  
 
-2. On Linux:  
+2. On Alpine Linux:
+```
+    build$ ./build_intro_linux_musl_x64.sh
+```
+3. On Linux:  
 ```
     build$ ./build_intro_linux_xxx.sh
 ```
-Note: it s important to set the environment on Linux, see in next step [Running the Samples](#running-the-samples).
+Note: it s important to set the environment on Alpine Linux and Linux, see in next step [Running the Samples](#running-the-samples).
 
-3. On Mac:
+4. On Mac:
 ```
     build$ ./build_intro_mac_xxx.sh
 ```
-4. On Windows, you can either build the source code from Visual Studio IDE or from DOS command prompt.   
+5. On Windows, you can either build the source code from Visual Studio IDE or from DOS command prompt.   
 To build from the IDE, you will need to go to `build\intro\win\VS2008` and double-click on `intro.sln`.  
 To build from DOS prompt, you must launch the appropriate Visual Studio Command Prompt and then run the `build_intro_win_xxx.bat`
 
@@ -52,7 +65,7 @@ To try individual samples, build the project from source and then run samples li
 
 1. `cd ../bin`
 
-2. On Linux:
+2. On Linux and Alpine-linux:
 ```
     bin$ source ./setenv.sh
     bin$ ./TopicPublisher
