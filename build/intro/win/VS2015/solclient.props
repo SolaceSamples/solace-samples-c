@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <SolclientBasePath>$(SolutionDir)..\..\..\..\</SolclientBasePath>
+    <SolclientPreprocessor>_CRT_SECURE_NO_WARNINGS;SOLCLIENT_CONST_PROPERTIES;PROVIDE_LOG_UTILITIES</SolclientPreprocessor>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup />
+  <ItemGroup>
+    <BuildMacro Include="SolclientBasePath">
+      <Value>$(SolclientBasePath)</Value>
+    </BuildMacro>
+    <BuildMacro Include="SolclientPreprocessor">
+      <Value>$(SolclientPreprocessor)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

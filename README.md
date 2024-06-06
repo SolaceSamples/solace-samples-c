@@ -26,9 +26,7 @@ This repository contains code and matching tutorial walk throughs for the basic 
 - gcc compiler
 
 ### On Windows
-- Visual Studio 2008 and above. (Tested on VS2008/2010/2013/2015)  
-  (**Note:** To build 64-bit sample apps, please make sure that the x64 compiler is installed)
-- VS2008 redistributable installed. (For non-static build)
+- Visual Studio 2015 and above. (Tested on VS2015/2019/2022)  
 
 ## Checking out and Building
 
@@ -56,7 +54,7 @@ Note: it s important to set the environment on Alpine Linux and Linux, see in ne
     build$ ./build_intro_mac_xxx.sh
 ```
 5. On Windows, you can either build the source code from Visual Studio IDE or from DOS command prompt.   
-To build from the IDE, you will need to go to `build\intro\win\VS2008` and double-click on `intro.sln`.  
+To build from the IDE, you will need to go to `build\intro\win\VS2015` and double-click on `intro.sln`.  
 To build from DOS prompt, you must launch the appropriate Visual Studio Command Prompt and then run the `build_intro_win_xxx.bat`
 
 ### Running the Samples
