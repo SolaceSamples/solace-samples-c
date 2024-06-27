@@ -1,7 +1,7 @@
 /**
 * @file solClientMsg.h include file for Solace Corporation Messaging Buffer Management
 *
-* Copyright 2008-2018 Solace Corporation. All rights reserved.
+* Copyright 2008-2024 Solace Corporation. All rights reserved.
 */
 /** @page msgbuffer Solace Message Buffers
 * 
@@ -43,18 +43,34 @@
 * @li ReplyTo - a ReplyTo destination.
 * @li SenderId - a Sender Identification. This field can be automatically generated when 
 *                the session property 
-*                ::SOLCLIENT_SESSION_PROP_GENERATE_SESSION_ID is enabled. When
+*                ::SOLCLIENT_SESSION_PROP_GENERATE_SENDER_ID is enabled. When
 *                this property is enabled, and the SenderId is not explicitly
-*                set, the session ClientName is used as the SenderId.
+*                set, the session ClientName is used as the SenderId.<br>
+*                The SenderID is user-defined, carried end-to-end, and can also be matched
+*                in a selector, but otherwise is not relevant to the event broker.
 * @li Application MsgType - a string for an application specific MsgType.
+*                 The ApplicationMessageType is user-defined,
+*                 carried end-to-end, and can also be matched in a selector, but otherwise is not relevant
+*                 to the event broker.<br>
+*                 In JMS applications, this field is carried as the JMSType Message Header Field.
 * @li Application MessageId - a string for an application-specific Message Identifier.
+*                 The ApplicationMessageId is user-defined,
+*                 carried end-to-end, and can also be matched in a selector, but otherwise is not relevant
+*                 to the event broker.<br>
+*                 In JMS applications, this field is carried as the JMSMessageID Message Header Field.
 * @li Sequence Number  - a 64-bit application Sequence Number, set by Publisher.
 *                This field may be automatically generated when the session property
 *                ::SOLCLIENT_SESSION_PROP_GENERATE_SEQUENCE_NUMBER is 
 *                enabled. When this property is enabled, and the Sequence 
 *                Number is not explicitly set, a unique and increasing sequence
-*                number is generated for each sent message.
+*                number is generated for each sent message.<br>
+*                The SequenceNo is user-defined, carried end-to-end, and can also be matched
+*                in a selector, but otherwise is not relevant to the event broker.
 * @li CorrelationId - a string for an application-specific correlation tag.
+*                 The CorrelationId is user-defined,
+*                 carried end-to-end, and can also be matched in a selector, but otherwise is not relevant
+*                 to the event broker.  The CorrelationId may be used for peer-to-peer message synchronization.<br>
+*                 In JMS applications, this field is carried as the JMSCorrelationID Message Header Field.
 * @li Send Timestamp - a 64-bit field set by the Publisher. This field may be
 *                automatically generated when the session property
 *                ::SOLCLIENT_SESSION_PROP_GENERATE_SEND_TIMESTAMPS 
@@ -218,7 +234,7 @@ typedef enum solClient_cacheStatus
 
 /** @name Number of Message Size Quanta
 * The number of message size quanta available.
-* @see ::SOLCLIENT_GLOBAL_PROP_DBQUANTASIZE_0 through ::SOLCLIENT_GLOBAL_PROP_DBQUANTASIZE_5
+* @see ::SOLCLIENT_GLOBAL_PROP_DBQUANTASIZE_0 through ::SOLCLIENT_GLOBAL_PROP_DBQUANTASIZE_4
 */
 /*@{*/
 #define SOLCLIENT_MSG_NUMDBQUANTA               (5)  /**< The number of message size quanta available */
@@ -332,7 +348,7 @@ solClient_msg_reset(solClient_opaqueMsg_pt msg_p);
 /**
  * Given a msg_p, retrieve the user property Map from binary metadata.
  * The returned map is a multimap, in which more than one value may be associated 
- * with a given field name. A call to ::solClient_container_addXyz() does not
+ * with a given field name. A call to <i>solClient_container_addXyz()</i> does not
  * overwrite an existing one, instead it adds a new field. To overwrite an existing
  * field, the field has to been deleted and then added with a new value. To get all
  * values associated with a given field name, a linear search is required.
@@ -343,7 +359,7 @@ solClient_msg_reset(solClient_opaqueMsg_pt msg_p);
  * application cannot continue to use the map. Attempting to use a closed map
  * returns an invalid pointer error (::SOLCLIENT_SUBCODE_PARAM_NULL_PTR).
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param map_p    A pointer to memory that contains a map pointer on return.
@@ -366,7 +382,7 @@ solClient_msg_getUserPropertyMap(solClient_opaqueMsg_pt msg_p,
  * application may not continue to use the stream. Attempting to use a closed stream
  * returns an invalid pointer error (::SOLCLIENT_SUBCODE_PARAM_NULL_PTR)
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param stream_p pointer to memory that contains a stream pointer on return.
@@ -382,7 +398,7 @@ solClient_msg_getBinaryAttachmentStream(solClient_opaqueMsg_pt msg_p,
 /**
  * Given a msg_p, retrieve the contents of a binary attachment part as a map. 
  * The returned map is a multimap in which more than one value may be associated 
- * with a given field name. A call to ::solClient_container_addXyz() does not
+ * with a given field name. A call to <i>solClient_container_addXyz()</i> does not
  * overwrite an existing one, but adds a new one instead. To overwrite an existing
  * field, the field has to been deleted and then added with a new value. To get all
  * values associated with a given field name, a linear search is required.
@@ -393,7 +409,7 @@ solClient_msg_getBinaryAttachmentStream(solClient_opaqueMsg_pt msg_p,
  * application may not continue to use the map. Attempting to use a closed map
  * will return an invalid pointer error (::SOLCLIENT_SUBCODE_PARAM_NULL_PTR)
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param map_p    A pointer to memory that contains a map pointer on return;
@@ -410,7 +426,7 @@ solClient_msg_getBinaryAttachmentMap(solClient_opaqueMsg_pt msg_p,
  * Given a msg_p, retrieve the contents of a binary attachment part and 
  * return the pointer and length.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                       to solClient_msg_alloc() or received data callback.
  * @param bufPtr_p       A pointer to the application pointer to fill in with the 
  *                       message data pointer on return. The programmer may cast
@@ -432,7 +448,7 @@ solClient_msg_getBinaryAttachmentPtr(solClient_opaqueMsg_pt msg_p,
  * Given a msg_p, retrieve the contents of a binary attachment part if it is
  * a JMS string and return a pointer to the string (NULL-terminated string).
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                       to solClient_msg_alloc() or received data callback.
  * @param bufPtr_p       A pointer to memory that contains the string pointer
  *                       on return.
@@ -449,7 +465,7 @@ solClient_msg_getBinaryAttachmentString(solClient_opaqueMsg_pt msg_p,
  * attachment. If there is no open container in the binary attachment, 
  * this function returns ::SOLCLIENT_NOT_FOUND.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                       to solClient_msg_alloc() or received data callback.
  * @param size_p   A pointer to memory that contains the size on return.
  * @returns        ::SOLCLIENT_OK or ::SOLCLIENT_FAIL or ::SOLCLIENT_NOT_FOUND
@@ -490,7 +506,7 @@ solClient_msg_getCorrelationTagPtr(solClient_opaqueMsg_pt msg_p,
  *
  * The maximum size allowed for the user data part is ::SOLCLIENT_BUFINFO_MAX_USER_DATA_SIZE.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param bufPtr_p       A pointer to the application pointer to fill in with the 
@@ -510,7 +526,7 @@ solClient_msg_getUserDataPtr(solClient_opaqueMsg_pt       msg_p,
 /**
  * Given a msg_p, retrieve the contents of a XML part of the message.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param bufPtr_p       A pointer to the application pointer to fill in with the 
@@ -569,7 +585,7 @@ solClient_msg_getSMFPtr(solClient_opaqueMsg_pt msg_p,
  * <b>NOTE:</b> When a Guaranteed message is constructed with this API 
  * refer to @ref adConsiderations.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param buf_p          A pointer to buffer.
@@ -593,7 +609,7 @@ solClient_msg_setBinaryAttachmentPtr(solClient_opaqueMsg_pt msg_p,
  * Passing in a buf_p of NULL and a size of zero results in 
  * a binary attachment not being present in the message.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param buf_p          A pointer to buffer.
@@ -618,7 +634,7 @@ solClient_msg_setBinaryAttachment(solClient_opaqueMsg_pt msg_p,
  * Passing in a buf_p of NULL results in 
  * a binary attachment not being present in the message.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param buf_p          A pointer to a buffer containing a UTF-8 or ASCII string.
@@ -651,7 +667,7 @@ solClient_msg_setBinaryAttachmentString(solClient_opaqueMsg_pt msg_p,
  * attachment.
  *
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param cont_p   An opaque container pointer for the container to add.
@@ -683,7 +699,7 @@ solClient_msg_setBinaryAttachmentContainer(solClient_opaqueMsg_pt msg_p,
  * ::solClient_msg_setBinaryAttachmentContainer. It is unlikely the application will achieve any performance gains by
  * this function with Guaranteed messages.
  * 
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param cont_p   An opaque container pointer for the container to add.
@@ -707,7 +723,7 @@ solClient_msg_setBinaryAttachmentContainerPtr(solClient_opaqueMsg_pt msg_p,
  * <b>NOTE:</b> When a Guaranteed message is constructed with this API 
  * refer to @ref adConsiderations
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param buf_p    A pointer to buffer.
@@ -732,7 +748,7 @@ solClient_msg_setUserDataPtr(solClient_opaqueMsg_pt msg_p,
  * Passing in a buf_p of NULL and a size of zero results in 
  * user data not being present in the message.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param buf_p    A pointer to buffer.
@@ -757,7 +773,7 @@ solClient_msg_setUserData(solClient_opaqueMsg_pt msg_p,
  * <b>NOTE:</b> When a Guaranteed message is constructed with this API 
  * refer to @ref adConsiderations.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param buf_p    A pointer to buffer.
@@ -780,7 +796,7 @@ solClient_msg_setXmlPtr(solClient_opaqueMsg_pt msg_p,
  * Passing in a buf_p of NULL and a size of zero results in 
  * the XML part not being present in the message.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param buf_p    A pointer to buffer.
@@ -810,7 +826,7 @@ solClient_msg_setXml(solClient_opaqueMsg_pt msg_p,
  * must be aware that the data referenced cannot be modified until the send 
  * operation completes.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param correlation_p    A pointer to buffer.
@@ -842,7 +858,7 @@ solClient_msg_setCorrelationTagPtr(solClient_opaqueMsg_pt msg_p,
  * This causes memory to be allocated from internal
  * or heap storage.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param correlation_p  A pointer to the correlation information.
@@ -869,7 +885,7 @@ solClient_msg_setCorrelationTag(solClient_opaqueMsg_pt msg_p,
  * Only solClient_msg_setTopicPtr is provided, for copy-in operations use 
  * solClient_msg_setDestination.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param topic_p  A pointer to topic string.
@@ -895,7 +911,7 @@ solClient_msg_setTopicPtr(solClient_opaqueMsg_pt msg_p,
  * Only solClient_msg_setQueueNamePtr is provided, for copy-in 
  * operations use solClient_msg_setDestination.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param queueName_p    A pointer to topic string.
@@ -913,7 +929,7 @@ solClient_msg_setQueueNamePtr(solClient_opaqueMsg_pt msg_p,
  * in the passed in destination structure. On return dest_p->dest points to
  * message memory and is only valid as long as msg_p is valid.
  * 
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param dest_p         A pointer to destination structure to receive ReplyTo.
@@ -931,7 +947,7 @@ solClient_msg_getReplyTo(solClient_opaqueMsg_pt msg_p,
 /**
  * Given a msg_p, set the ReplyTo destination.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param dest_p         A pointer to ReplyTo destination to set.
@@ -949,10 +965,10 @@ solClient_msg_setReplyTo(solClient_opaqueMsg_pt msg_p,
 /** 
  * Given a msg_p, delete the ReplyTo destination.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
- * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL, ::SOLCLIENT_NOT_FOUND
+ * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL
  * @subcodes
  * @see ::solClient_subCode for a description of all subcodes.
  */
@@ -965,7 +981,7 @@ solClient_msg_deleteReplyTo(solClient_opaqueMsg_pt msg_p);
  * by setting the ::solClient_destination_t structure to 
  * {::SOLCLIENT_NULL_DESTINATION, NULL}.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param dest_p         A pointer to destination information.
@@ -986,7 +1002,7 @@ solClient_msg_setDestination(solClient_opaqueMsg_pt msg_p,
  * return dest_p->dest points to message memory and is only valid as 
  * long as msg_p is valid. 
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param dest_p         A pointer to destination information.
@@ -1001,9 +1017,14 @@ solClient_msg_getDestination(solClient_opaqueMsg_pt msg_p,
                         size_t                      destSize);
 
 /**
- * Given a msg_p, copy the SenderId into the given buffer.
+ * Given a msg_p, copy the SenderID pointer into the given buffer.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * This method allows the application to retrieve a pointer to the string that 
+ * is the SenderID.  The SenderID is user-defined,
+ * carried end-to-end, and can also be matched in a selector, but otherwise is not relevant
+ * to the event broker.  
+ * 
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param buf_p          A pointer to string pointer for senderId.
@@ -1018,12 +1039,18 @@ solClient_msg_getSenderId(solClient_opaqueMsg_pt msg_p,
                           const char *          *buf_p);
 
 /**
- * Given a msg_p, set the SenderId.  
+ * Given a msg_p, set the SenderID.  
+ *
  * This overrides ::SOLCLIENT_SESSION_PROP_GENERATE_SENDER_ID 
- * session property and forces the specified SenderId
+ * session property and forces the specified SenderID
  * into the binary message header.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * This method allows the application to set the contents of the 
+ * SenderID.  The SenderID is user-defined, carried end-to-end, and
+ * can also be matched in a selector but otherwise is not relevant
+ * to the event broker.  
+ * 
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param buf_p          A pointer to string for the data copy.
@@ -1038,10 +1065,10 @@ solClient_msg_setSenderId(solClient_opaqueMsg_pt msg_p,
 /** 
  * Given a msg_p, delete the SenderId.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
- * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL, ::SOLCLIENT_NOT_FOUND
+ * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL
  * @subcodes
  * @see ::solClient_subCode for a description of all subcodes.
  */
@@ -1049,9 +1076,16 @@ solClient_dllExport solClient_returnCode_t
 solClient_msg_deleteSenderId(solClient_opaqueMsg_pt msg_p);
 
 /**
- * Given a msg_p, copy the msgType topic pointer into the given pointer.
+ * Given a msg_p, copy the ApplicationMessageType topic pointer into the given pointer.
  * 
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * This method allows the application to retrieve a pointer to the string that 
+ * is the ApplicationMessageType.  The ApplicationMessageType is user-defined,
+ * carried end-to-end, and can also be matched in a selector, but otherwise is not relevant
+ * to the event broker.  
+ * 
+ * In JMS applications, this field is carried as the JMSType Message Header Field.
+ *
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param msgType_p      A pointer to string pointer to receive msgType pointer.
@@ -1066,9 +1100,17 @@ solClient_msg_getApplicationMsgType(solClient_opaqueMsg_pt msg_p,
                                     const char *          *msgType_p);
 
 /**
- * Given a msg_p, set the MsgType field.
+ * Given a msg_p, set the ApplicationMessageType field.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * This method allows the application to set the string contents of the 
+ * ApplicationMessageType.  The ApplicationMessageType is user defined,
+ * carried end-to-end, and can slso be matched in a selector, but otherwise is not relevant
+ * to the event broker.  
+ * 
+ * In JMS applications, this field is carried as the JMSType Message Header Field.
+ *
+ *
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param msgType        A pointer to string with msgType.
@@ -1084,10 +1126,10 @@ solClient_msg_setApplicationMsgType(solClient_opaqueMsg_pt msg_p,
 /** 
  * Given a msg_p, delete the MsgType field.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
- * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL, ::SOLCLIENT_NOT_FOUND
+ * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL
  * @subcodes
  * @see ::solClient_subCode for a description of all subcodes.
  */
@@ -1095,9 +1137,16 @@ solClient_dllExport solClient_returnCode_t
 solClient_msg_deleteApplicationMsgType(solClient_opaqueMsg_pt msg_p);
 
 /**
- * Given a msg_p, copy the Application MessageId pointer into the given buffer.
+ * Given a msg_p, copy the ApplicationMessageId pointer into the given buffer.
+ *
+ * This method allows the application to retrieve a pointer to the string that 
+ * is the ApplicationMessageId.  The ApplicationMessageId is user-defined,
+ * carried end-to-end, and can also be matched in a selector, but otherwise is not relevant
+ * to the event broker.  
  * 
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * In JMS applications, this field is carried as the JMSMessageID Message Header Field.
+ * 
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param messageId_p    A pointer to string pointer to receive MessageId pointer.
@@ -1112,9 +1161,16 @@ solClient_msg_getApplicationMessageId(solClient_opaqueMsg_pt msg_p,
                                       const char *          *messageId_p);
 
 /**
- * Given a msg_p, set the Application MessageID field.
+ * Given a msg_p, set the ApplicationMessageId field.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * This method allows the application to set the string contents of the 
+ * ApplicationMessageId.  The ApplicationMessageId is user defined,
+ * carried end-to-end, and can slso be matched in a selector, but otherwise is not relevant
+ * to the event broker.  
+ * 
+ * In JMS applications, this field is carried as the JMSMessageId Message Header Field.
+ *
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param messageId_p    pointer to string containing messageId.
@@ -1130,10 +1186,10 @@ solClient_msg_setApplicationMessageId(solClient_opaqueMsg_pt msg_p,
 /** 
  * Given a msg_p, delete the Application MessageId field.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
- * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL, ::SOLCLIENT_NOT_FOUND
+ * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL
  * @subcodes
  * @see ::solClient_subCode for a description of all subcodes.
  */
@@ -1141,12 +1197,17 @@ solClient_dllExport solClient_returnCode_t
 solClient_msg_deleteApplicationMessageId(solClient_opaqueMsg_pt msg_p);
 
 /**
- * Given a msg_p, copy the Sequence Number into the given buffer.
+ * Given a msg_p, copy the SequenceNo into the given buffer.
  * A sequence number is automatically included (if not already present) in 
  * the Solace-defined fields for each message sent if the session property
  * ::SOLCLIENT_SESSION_PROP_GENERATE_SEQUENCE_NUMBER is enabled.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * This method allows the application to retrieve the value that 
+ * is the SequenceNo.  The SequenceNo is user-defined,
+ * carried end-to-end, and can also be matched in a selector, but otherwise is not relevant
+ * to the event broker.  
+ * 
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param seqNum_p       A pointer to 64-bit field to receive the value.
@@ -1172,7 +1233,12 @@ solClient_msg_getSequenceNumber(solClient_opaqueMsg_pt msg_p,
  * the Solace-defined fields for each message sent if the session property
  * ::SOLCLIENT_SESSION_PROP_GENERATE_SEQUENCE_NUMBER is enabled.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * This method allows the application to set the value of the 
+ * SequenceNo.  The SequenceNo is user defined,
+ * carried end-to-end, and can slso be matched in a selector, but otherwise is not relevant
+ * to the event broker.  
+ * 
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param seqNum         The 64-bit Sequence Number.
@@ -1188,10 +1254,10 @@ solClient_msg_setSequenceNumber(solClient_opaqueMsg_pt msg_p,
 /** 
  * Given a msg_p, delete the Sequence Number field.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
- * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL, ::SOLCLIENT_NOT_FOUND
+ * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL
  * @subcodes
  * @see ::solClient_subCode for a description of all subcodes.
  */
@@ -1199,9 +1265,16 @@ solClient_dllExport solClient_returnCode_t
 solClient_msg_deleteSequenceNumber(solClient_opaqueMsg_pt msg_p);
 
 /**
- * Given a msg_p, copy the Correlation Id into the given buffer.
+ * Given a msg_p, copy the CorrelationId pointer into the given buffer.
+ *
+ * This method allows the application to retrieve a pointer to the string that 
+ * is the CorrelationId.  The CorrelationId is user-defined,
+ * carried end-to-end, and can also be matched in a selector, but otherwise is not relevant
+ * to the event broker.  The CorrelationId may be used for peer-to-peer message synchronization.
  * 
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * In JMS applications, this field is carried as the JMSCorrelationID Message Header Field.
+ * 
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param correlation_p  A pointer to string pointer to receive correlation 
@@ -1217,11 +1290,15 @@ solClient_msg_getCorrelationId(solClient_opaqueMsg_pt msg_p,
                                const char *          *correlation_p);
 
 /**
- * Given a msg_p, set the Correlation Id field. The message Correlation Id
- * is carried in the Solace message headers unmodified by the appliance and may
- * be used for peer-to-peer message synchronization.
+ * Given a msg_p, set the CorrelationId field.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * The CorrelationId is user-defined, carried end-to-end, and can also be matched
+ * in a selector, but otherwise is not relevant
+ * to the event broker.  The CorrelationId may be used for peer-to-peer message synchronization.
+ *
+ * In JMS applications, this field is carried as the JMSCorrelationID Message Header Field.
+ * 
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param correlation_p  A pointer to string to copy into correlationId.
@@ -1237,10 +1314,10 @@ solClient_msg_setCorrelationId(solClient_opaqueMsg_pt msg_p,
 /** 
  * Given a msg_p, delete the Correlation Id field. 
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
- * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL, ::SOLCLIENT_NOT_FOUND
+ * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL
  * @subcodes
  * @see ::solClient_subCode for a description of all subcodes.
  */
@@ -1250,7 +1327,7 @@ solClient_msg_deleteCorrelationId(solClient_opaqueMsg_pt msg_p);
 /**
  * Given a msg_p, copy the Receive Timestamp into the given buffer.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param timestamp_p    A pointer to a 64-bit field to receive the value.
@@ -1270,7 +1347,7 @@ solClient_msg_getRcvTimestamp(solClient_opaqueMsg_pt msg_p,
  * session property and sets the specified Sender Timestamp value
  * in the binary message header.  
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param timestamp  The sender timestamp value to set. The value is in milliseconds.
@@ -1286,7 +1363,7 @@ solClient_msg_setSenderTimestamp(solClient_opaqueMsg_pt msg_p,
 /**
  * Given a msg_p, copy the SenderTimestamp into the given buffer.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param timestamp_p    A pointer to a 64-bit field to receive the value.
@@ -1304,10 +1381,10 @@ solClient_msg_getSenderTimestamp(solClient_opaqueMsg_pt msg_p,
 /** 
  * Given a msg_p, delete the SenderTimestamp.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
- * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL, ::SOLCLIENT_NOT_FOUND
+ * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL
  * @subcodes
  * @see ::solClient_subCode for a description of all subcodes.
  */
@@ -1336,7 +1413,7 @@ solClient_msg_deleteSenderTimestamp(solClient_opaqueMsg_pt msg_p);
  *
  * See solClient_msg_getExpiration() for more details.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param timestamp  The sender timestamp value to set. The value is in milliseconds.
@@ -1361,7 +1438,7 @@ solClient_msg_setExpiration(solClient_opaqueMsg_pt    msg_p,
  * If the expiration time is not set in the message, and it cannot be calculated, the
  * timestamp is set to zero.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param timestamp_p    A pointer to a 64-bit field to receive the value.
@@ -1388,7 +1465,7 @@ solClient_msg_getExpiration(solClient_opaqueMsg_pt    msg_p,
  * with ::SOLCLIENT_COS_1 can be rejected by the solace message-router if
  * that message would cause any queue or topic-endpoint to exceed its configured
  * <i>low-priority-max-msg-count</i>.
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param cos_p         A place to store the returned class of service, one of 
@@ -1418,7 +1495,7 @@ solClient_msg_getClassOfService(solClient_opaqueMsg_pt msg_p,
  * that message would cause any queue or topic-endpoint to exceed its configured
  * <i>low-priority-max-msg-count</i>.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param cos            The class of service, one of ::SOLCLIENT_COS_1,
@@ -1436,7 +1513,7 @@ solClient_msg_setClassOfService(solClient_opaqueMsg_pt msg_p,
  * Given a msg_p, get the Time To Live (TTL) from a message. If the message does not
  * contain a time to live field, zero is returned.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param ttl_p    A pointer to a 64-bit field to receive the value.
@@ -1458,7 +1535,7 @@ solClient_msg_getTimeToLive  (  solClient_opaqueMsg_pt msg_p,
  * It has no effect when used in conjunction with other message types unless the message 
  * is promoted by the appliance to a Guaranteed message. 
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param ttl      64-bit value in milliseconds to use for message time to live.
@@ -1474,7 +1551,7 @@ solClient_msg_setTimeToLive (   solClient_opaqueMsg_pt msg_p,
 /**
  * Given a msg_p, return the delivery mode.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param mode_p         A place to store the returned delivery mode, one of 
@@ -1494,7 +1571,7 @@ solClient_msg_getDeliveryMode(solClient_opaqueMsg_pt msg_p,
 /**
  * Given a msg_p, set the delivery mode.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param mode           The delivery mode to use for this message. It can be one of the following:
@@ -1512,9 +1589,14 @@ solClient_msg_setDeliveryMode(solClient_opaqueMsg_pt msg_p,
                                solClient_uint32_t    mode);
 
 /**
- * Given a msg_p, return the Guaranteed message Id.
+ * Given a msg_p, return the Guaranteed message Id. The guaranteed message Id only
+ * exists in messages received on a flow.  The message Id is only to be used for the 
+ * purpose of acknowledgements.  No other meaning should be inferred from the value 
+ * of the message Id.  
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * Messages are acknowledged by calling ::solClient_flow_sendAck()
+ *
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param msgId_p  pointer to memory to store the returned msgId.
@@ -1533,7 +1615,7 @@ solClient_msg_getMsgId(solClient_opaqueMsg_pt   msg_p,
  * Given a msg_p, return the Topic Sequence Number.  If there is no topic sequence number
  * SOLCLIENT_NOT_FOUND is returned and the sequence number returned is zero.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param seqNum_p pointer to memory to store the returned topic sequence number.
@@ -1549,9 +1631,29 @@ solClient_msg_getTopicSequenceNumber(solClient_opaqueMsg_pt   msg_p,
                                      solClient_int64_t       *seqNum_p);
 
 /**
+ * Given a msg_p, return the delivery count. If delivery is supported returns 
+ * SOLCLIENT_OK otherwise returns SOLCLIENT_FAIL. 
+ * Note messages from browser flows will have the delivery of the next
+ * consumer delivery not the current message delivery count from the endpoint.
+ *
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
+ *                 to solClient_msg_alloc() or received in a receive
+ *                 message callback.
+ * @param count_p  pointer to memory to store the returned delivery count.
+ * @returns        ::SOLCLIENT_OK if delivery count is supported, 
+ *                 ::SOLCLIENT_FAIL if delivery count is not supported, or 
+ *                 if msg_p or count_p are invalid.
+ * @subcodes
+ * @see ::solClient_subCode for a description of all subcodes.
+ */
+solClient_dllExport solClient_returnCode_t 
+solClient_msg_getDeliveryCount(solClient_opaqueMsg_pt msg_p, 
+                               solClient_int32_t * count_p);
+
+/**
  * Given a msg_p, test the redeliver status.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  *
@@ -1564,7 +1666,7 @@ solClient_msg_isRedelivered(solClient_opaqueMsg_pt msg_p);
 /**
  * Given a msg_p, return the data source (live or cached message).
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  *
@@ -1598,7 +1700,7 @@ solClient_msg_getCacheRequestId(solClient_opaqueMsg_pt msg_p,
  * 
  * @see ::solClient_msg_isElidingEligible for information about message eliding.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  *
@@ -1610,7 +1712,7 @@ solClient_msg_isDiscardIndication(solClient_opaqueMsg_pt msg_p);
 /**
  * Given a msg_p, test the response attribute.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  *
@@ -1620,44 +1722,12 @@ solClient_dllExport solClient_bool_t
 solClient_msg_isReplyMsg(solClient_opaqueMsg_pt msg_p);
 
 /**
- * Given a msg_p, set the Deliver-To-One property on a message. 
- * This property is only supported by appliances running SolOS-TR.
- * 
- * When a direct message has the Deliver-To-One property set, it can be delivered
- * only to one client. For a Guaranteed Delivery message, this behavior only applies
- * to the "demoted" direct copy of this message.
- *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
- *                 to solClient_msg_alloc() or received in a receive
- *                 message callback.
- * @param val      0 - clear, 1 - set.
- * @returns        ::SOLCLIENT_OK on success, ::SOLCLIENT_FAIL if
- *                       msg_p is invalid.
- * @subcodes
- * @see ::solClient_subCode for a description of all subcodes.
- */
-solClient_dllExport solClient_returnCode_t 
-solClient_msg_setDeliverToOne(solClient_opaqueMsg_pt msg_p,
-                             solClient_bool_t      val);
-
-/**
- * Given a msg_p, test the Deliver-To-One property.
- *
- * @param msg_p    solClient_opaqueMsg_pt returned from a previous call
- *                 to solClient_msg_alloc() or received in a receive
- *                 message callback.
- *
- * @returns        True, if the message has the Deliver-To-One property property set.
- */
-solClient_dllExport solClient_bool_t
-solClient_msg_isDeliverToOne(solClient_opaqueMsg_pt msg_p);
-
-/**
  * Given a msg_p, set the Dead Message Queue (DMQ) eligible property on a message. When this
  * option is set, messages that expire in the network, are saved on a appliance dead message 
  * queue. Otherwise expired messages are discarded.
+ * By default the property is set to false on newly created messages.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param val      0 - clear, 1 - set.
@@ -1692,7 +1762,7 @@ solClient_msg_isDMQEligible(solClient_opaqueMsg_pt msg_p);
  *
  * When this function is used, a delimiter ('/') and the supplied string are appended instead.
  *
- * @param msg_p          solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p          A solClient_opaqueMsg_pt that is returned from a previous call
  *                       to solClient_msg_alloc() or received in a receive
  *                       message callback.
  * @param opaqueSession_p pointer to the Session the message is later used with.
@@ -1712,7 +1782,7 @@ solClient_msg_setReplyToSuffix(solClient_opaqueMsg_pt msg_p,
  * returns a pointer to the string following the '/' delimiter that terminates the topic
  * prefix.
  *
- * @param msg_p          solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p          A solClient_opaqueMsg_pt that is returned from a previous call
  *                       to solClient_msg_alloc() or received in a receive
  *                       message callback.
  * @param opaqueSession_p A pointer to the Session the message was received on.
@@ -1762,7 +1832,7 @@ solClient_msg_setAsReplyMsg(solClient_opaqueMsg_pt msg_p, solClient_bool_t isRep
  * This property does not indicate whether the message was elided or even provide
  * information about the subscriber's configuration (with regards to Message Eliding).
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param elide    A Boolean that indicates whether to set or reset the Eliding Eligible
@@ -1779,7 +1849,7 @@ solClient_msg_setElidingEligible(solClient_opaqueMsg_pt msg_p, solClient_bool_t 
  * Does not indicate whether messages were elided or provide information about the
  * subscriber profile eliding configuration.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  *
@@ -1805,7 +1875,7 @@ solClient_msg_isElidingEligible(solClient_opaqueMsg_pt msg_p);
 /**
  * Create a map container in the binary attachment of the message.
  * The map is a multimap in which more than one value may be associated 
- * with a given field name. A call to ::solClient_container_addXyz() does not
+ * with a given field name. A call to <i>solClient_container_addXyz()</i> does not
  * overwrite an existing one, but adds a new one instead. To overwrite an existing
  * field, the field has to been deleted and then added with a new value. To get all
  * values associated with a given field name, a linear search is required.
@@ -1820,7 +1890,7 @@ solClient_msg_isElidingEligible(solClient_opaqueMsg_pt msg_p);
  * application may not continue to use the map. Attempting to use a closed map
  * will return an invalid pointer error (::SOLCLIENT_SUBCODE_PARAM_NULL_PTR).
 *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param map_p         A pointer location to receive the container pointer.
@@ -1856,7 +1926,7 @@ solClient_msg_createBinaryAttachmentMap(solClient_opaqueMsg_pt   msg_p,
  * application may not continue to use the stream. Attempting to use a closed stream
  * returns an invalid pointer error (::SOLCLIENT_SUBCODE_PARAM_NULL_PTR).
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param stream_p      A pointer location to receive the container pointer.
@@ -1882,7 +1952,7 @@ solClient_msg_createBinaryAttachmentStream(solClient_opaqueMsg_pt   msg_p,
 /**
  * Create a User Property map in the binary metadata header.
  * The map is a multimap in which more than one value may be associated 
- * with a given field name. A call to ::solClient_container_addXyz() does not
+ * with a given field name. A call to <i>solClient_container_addXyz()</i> does not
  * overwrite an existing one, but adds a new one instead. To overwrite an existing
  * field, the field has to been deleted and then added with a new value. To get all
  * values associated with a given field name, a linear search is required.
@@ -1946,7 +2016,7 @@ solClient_msg_setUserPropertyMap(solClient_opaqueMsg_pt   msg_p,
  *  If there is structured data found, either a map or steam, then the 
  *  opaque container required to access the data is returned.
  * 
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param field_p  The address of the solClient_field_t structure where the API will 
@@ -1987,7 +2057,7 @@ solClient_msg_getStat(solClient_msg_stats_t  msgStatType,
  *  string in application-supplied buffer that the application can log or print. If
  *  the supplied buffer pointer is NULL, this function prints to STDOUT.
  * 
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param buffer_p A pointer to a buffer to receive the output string. NULL means to dump
@@ -2024,7 +2094,7 @@ solClient_msg_dumpExt(
  *  This function is equivalent to solClient_msg_dumpExt(msg_p, buffer_p, bufferSize,
  *  SOLCLIENT_MSGDUMP_FULL).
  * 
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param buffer_p A pointer to a buffer to receive the output string. NULL means to dump
@@ -2062,7 +2132,7 @@ solClient_msg_dump(
  *
  * Setting this property on an outgoing direct message has no effect.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param val      A Boolean that indicates whether to set or clear the ACK Immediately message property. 
@@ -2086,7 +2156,7 @@ solClient_msg_setAckImmediately(
  * to a consumer, so message consumers must not expect the property value indicates how the message was
  * originally published
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @returns         True, if the ACK Immediately message property is set to TRUE.
@@ -2100,7 +2170,7 @@ solClient_msg_isAckImmediately(
  * Given a msg_p, retrieve the HTTP Content Type. On return type_p points to
  * message memory and is only valid as long as msg_p is valid.
  * 
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param type_p   On return, it points to message memory containing HTTP Content Type.
@@ -2133,7 +2203,7 @@ solClient_msg_getHttpContentEncoding(solClient_opaqueMsg_pt  msg_p,
 /**
  * Given a msg_p, set or delete (if type_p == NULL) its HTTP Content Type.
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param type_p   A pointer to a null terminated HTTP Content Type .
@@ -2148,7 +2218,7 @@ solClient_msg_setHttpContentType(solClient_opaqueMsg_pt msg_p,
 /**
  * Given a msg_p, set or delete (if encoding_p == NULL) its HTTP Content Encoding. 
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @param encoding_p     A pointer to a null terminated HTTP Content Encoding.
@@ -2163,7 +2233,7 @@ solClient_msg_setHttpContentEncoding(solClient_opaqueMsg_pt msg_p,
 /** 
  * Given a msg_p, delete the HTTP Content Type. 
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL
@@ -2176,7 +2246,7 @@ solClient_msg_deleteHttpContentType(solClient_opaqueMsg_pt msg_p);
 /** 
  * Given a msg_p, delete the HTTP Content Encoding. 
  *
- * @param msg_p    solClient_opaqueMsg_pt that is returned from a previous call
+ * @param msg_p    A solClient_opaqueMsg_pt that is returned from a previous call
  *                 to solClient_msg_alloc() or received in a receive
  *                 message callback.
  * @returns        ::SOLCLIENT_OK, ::SOLCLIENT_FAIL
@@ -2194,7 +2264,7 @@ solClient_msg_deleteHttpContentEncoding(solClient_opaqueMsg_pt msg_p);
  * SOLCLIENT_SUBCODE_INSUFFICIENT_SPACE.
  * The map is a multimap in which more than one value may be associated with a given field
  * name. 
- * A call to ::solClient_container_addXyz() does not
+ * A call to <i>solClient_container_addXyz()</i> does not
  * overwrite an existing field, instead it adds a new one. To overwrite an existing
  * field, the field has to been deleted and then added with a new value. To get all
  * values associated with a given field name, a linear search is required.
@@ -3751,7 +3821,6 @@ solClient_container_getSubStream (solClient_opaqueContainer_pt container_p,
  *  @param name         The name of the field to remove.
  *
  *  @returns            @li ::SOLCLIENT_OK on success
- *                      @li ::SOLCLIENT_NOT_FOUND if not found in a map.
  *                      @li ::SOLCLIENT_FAIL on failure. This function can 
  *                      fail if any of the parameters to the 
  *                      call are invalid.
@@ -3818,6 +3887,94 @@ solClient_dllExport solClient_returnCode_t
 solClient_msg_setPriority(solClient_opaqueMsg_pt msg_p,
                           solClient_int32_t    priority);
 
+#define SOLCLIENT_REPLICATION_GROUP_MESSAGE_ID_INITIALIZER {{0}}
+#define SOLCLIENT_REPLICATION_GROUP_MESSAGE_ID_SIZE 16
+#define SOLCLIENT_REPLICATION_GROUP_MESSAGE_ID_STRING_LENGTH 41
+
+typedef struct solClient_replicationGroupMessageId{
+    char replicationGroupMessageId[SOLCLIENT_REPLICATION_GROUP_MESSAGE_ID_SIZE];
+} solClient_replicationGroupMessageId_t, *solClient_replicationGroupMessageId_pt;
+
+/**
+ * Validate a Replication Group Message Id
+ *
+ * @param rgmid_p       A pointer to a ::solClient_replicationGroupMessageId_t. The 
+ *                      object must have been previously initialized by either
+ *                      ::solClient_msg_getReplicationGroupMessageId() or 
+ *                      ::solClient_replicationGroupMessageId_fromString()
+ * @returns             ::SOLCLIENT_OK or ::SOLCLIENT_FAIL
+ */
+solClient_dllExport solClient_bool_t
+solClient_replicationGroupMessageId_isValid(solClient_replicationGroupMessageId_pt rgmid_p);
+
+/**
+ * Compare two Replication Group Message Id.  Not all valid ::solClient_replicationGroupMessageId_t
+ * can be compared.  If the messages identified were not published to the same broker or HA pair, then
+ * they are not comparable and this method returns ::SOLCLIENT_FAIL
+ *
+ * @param rgmid1_p      A pointer to the first ::solClient_replicationGroupMessageId_t
+ * @param rgmid2_p      A pointer to the second ::solClient_replicationGroupMessageId_t
+ * @param compare_p     A pointer to an integer for the result which is:
+ *                              *compare_p < 0 if first is less than the second
+ *                              *compare_p == 0 if both are the same.
+ *                              *compare_p >0 if the first is greater than the second.
+ * @returns             ::SOLCLIENT_OK on success.  ::SOLCLIENT_FAIL if the Replication Group 
+ *                      Message Id cannot be compared.
+ * @subcodes            ::SOLCLIENT_SUBCODE_MESSAGE_ID_NOT_COMPARABLE
+ */
+solClient_dllExport solClient_returnCode_t           
+solClient_replicationGroupMessageId_compare(solClient_replicationGroupMessageId_pt rgmid1_p,
+                                            solClient_replicationGroupMessageId_pt rgmid2_p,
+                                            int *compare_p);
+
+/** 
+ * Convert a Replication Group Message Id to a defined string format.  The standard 
+ * format can be stored for later use in ::solClient_replicationGroupMessageId_fromString. 
+ *
+ * @param rgmid_p       A pointer to ::solClient_replicationGroupMessageId_t to serialize.
+ * @param size_rgmid    The return from sizeof(solClient_replicationGroupMessageId_t)
+ * @param str           Pointer to string location to copy the string into.
+ * @param size_str      The available memory for the string. It should be at least 45 bytes
+ *                      for the standard string: rmid1:xxxxx-xxxxxxxxxxx-xxxxxxxx-xxxxxxxx
+ *                      If there is not enough room the output is truncated.
+ *
+ * @returns             ::SOLCLIENT_OK or ::SOLCLIENT_FAIL
+ */
+solClient_dllExport solClient_returnCode_t
+solClient_replicationGroupMessageId_toString(solClient_replicationGroupMessageId_pt rgmid_p,
+                                             size_t size_rgmid,
+                                             char *str,
+                                             size_t size_str);
+
+/** 
+ * Create a Replication Group Message Id from the string format.  The string may be 
+ * retrieved by a call to ::solClient_replicationGroupMessageId_toString, or it can be retrieved
+ * from any of the broker admin interfaces.
+ *
+ * @param rgmid_p       A pointer to ::solClient_replicationGroupMessageId_t to be filled.
+ * @param size_rgmid    The return from sizeof(solClient_replicationGroupMessageId_t)
+ * @param rgmid_str     Pointer to string representation of the Replication Group MessageId.
+ *
+ * @returns             ::SOLCLIENT_OK or ::SOLCLIENT_FAIL
+ */
+solClient_dllExport solClient_returnCode_t 
+solClient_replicationGroupMessageId_fromString(solClient_replicationGroupMessageId_pt rgmid_p,
+                                               size_t size_rgmid,
+                                               const char *rgmid_str);
+
+/** 
+ * Retrieve a Replication Group Message Id from a received message.
+ *
+ * @param msg_p         solClient_opaqueMsg_pt that is received in a receive message callback.
+ * @param rgmid_p       A pointer to ::solClient_replicationGroupMessageId_t to be filled.
+ * @param size          The return from sizeof(solClient_replicationGroupMessageId_t)
+ *
+ * @returns             ::SOLCLIENT_OK or ::SOLCLIENT_FAIL or ::SOLCLIENT_NOT_FOUND
+ */
+solClient_dllExport solClient_returnCode_t
+solClient_msg_getReplicationGroupMessageId(solClient_opaqueMsg_pt msg_p,
+                                           solClient_replicationGroupMessageId_pt rgmid_p,
+                                           size_t size);
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus */

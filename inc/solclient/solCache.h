@@ -2,7 +2,7 @@
 *
 * @file solCache.h Include file for the Solace Corporation Messaging API for C
 *
-* Copyright 2008-2018 Solace Corporation. All rights reserved.
+* Copyright 2008-2024 Solace Corporation. All rights reserved.
 *
 * This include file provides the public constants and API calls for 
 * applications that interface to the Solace Corporation SolCache.
@@ -15,7 +15,7 @@
 * Solace Corporation Cache Cluster.  A single Session may have many SolCache objects. Responses
 * from the cache are received in the usual Session rxCallback function.
 *
-* @see \ref solcachecfg "Client Session Configuration Properties"
+* @see \ref solcachecfg "Cache Session Configuration Properties"
 * \n
 * \ref cacherequestflags  "CacheRequest Flag Types"
 */
@@ -32,8 +32,7 @@ extern "C"
 
 /** 
  *
- * @anchor solcachecfg
- * @name Client Session Configuration Properties
+ * @defgroup solcachecfg  Cache Session Configuration Properties
  * Items that can be configured in a client application that wants to 
  * retrieve messages from the cache.
  */
@@ -102,7 +101,7 @@ typedef solClient_uint32_t solClient_cacheRequestFlags_t;       /**< A set of fl
  * @name CacheRequest Flag Types
  *
  * Values that can be used as part of the \link ::solClient_cacheRequestFlags_t cacheRequestFlags\endlink field to 
- * solClient_session_sendCacheRequest().  
+ * solClient_cacheSession_sendCacheRequest().  
  * 
  * The following live data actions determine when a cache request completes and how live data is handled while the 
  * cache request is outstanding. The actions are mutually exclusive, and one must be specified. 
@@ -203,7 +202,7 @@ solClient_cacheSession_destroy(solClient_opaqueCacheSession_pt   *opaqueCacheSes
  * @param callback_p      A callback pointer for an asynchronous reply to cache requests.
  * @param user_p          A user pointer to return with the callback.
  * @param cacheflags      \ref cacherequestflags "cacheRequest flags" to modify the cache request behavior.
- * @param subscribeFlags  Subscription flags (::SOLCLIENT_SUBSCRIBE_FLAGS_RX_ALL_DELIVER_TO_ONE)
+ * @param subscribeFlags  Subscription flags (\ref subscribeflags)
  * @returns ::SOLCLIENT_OK, ::SOLCLIENT_NOT_READY, ::SOLCLIENT_FAIL, ::SOLCLIENT_INCOMPLETE, ::SOLCLIENT_IN_PROGRESS, ::SOLCLIENT_WOULD_BLOCK
  * @subcodes
  * This function can return ::SOLCLIENT_FAIL for any of the following reasons:
@@ -232,6 +231,9 @@ solClient_cacheSession_destroy(solClient_opaqueCacheSession_pt   *opaqueCacheSes
  *                                                 suspect responses, but no data matching the cache 
  *                                                 request was found.
  * @li ::SOLCLIENT_SUBCODE_CACHE_REQUEST_CANCELLED - the cache request has been cancelled.
+ * @li ::SOLCLIENT_SUBCODE_CACHE_ALREADY_IN_PROGRESS - A  cache request has been made when there is
+ *     already a cache request outstanding on the same Topic and ::SOLCLIENT_CACHEREQUEST_FLAGS_LIVEDATA_FLOWTHRU
+ *     was not set.
  * @li ::SOLCLIENT_SUBCODE_PARAM_NULL_PTR          - the cache session has been destroyed.
  * @li ::SOLCLIENT_SUBCODE_CACHE_INVALID_SESSION   - the underlying session in which the cacheSession 
  *                        was created has been destroyed.
@@ -282,7 +284,7 @@ solClient_cacheSession_sendCacheRequest (solClient_opaqueCacheSession_pt opaqueC
  * @param callback_p      A callback pointer for an asynchronous reply to cache requests.
  * @param user_p          A user pointer to return with the callback.
  * @param cacheflags      \ref cacherequestflags "cacheRequest flags" to modify the cache request behaviour
- * @param subscribeFlags  Subscription flags (::SOLCLIENT_SUBSCRIBE_FLAGS_RX_ALL_DELIVER_TO_ONE)
+ * @param subscribeFlags  Subscription flags (\ref subscribeflags)
  * @param startSeqId      Starting sequence number for retrieved messages. If set to 
  *                        ::SOLCACHE_INVALID_TOPICSEQUENCE_NUMBER, then start at the oldest available message.
  *                        \note If both startSeqId and endSeqId are set to ::SOLCACHE_INVALID_TOPICSEQUENCE_NUMBER, only the newest message is retrieved.
@@ -315,6 +317,9 @@ solClient_cacheSession_sendCacheRequest (solClient_opaqueCacheSession_pt opaqueC
  *                                                 suspect responses but no data matching the cache 
  *                                                 request was found.
  * @li ::SOLCLIENT_SUBCODE_CACHE_REQUEST_CANCELLED - the cache request has been cancelled.
+ * @li ::SOLCLIENT_SUBCODE_CACHE_ALREADY_IN_PROGRESS - A  cache request has been made when there is
+ *     already a cache request outstanding on the same Topic and ::SOLCLIENT_CACHEREQUEST_FLAGS_LIVEDATA_FLOWTHRU
+ *     was not set.
  * @li ::SOLCLIENT_SUBCODE_PARAM_NULL_PTR          - the cache session has been destroyed.
  * @li ::SOLCLIENT_SUBCODE_CACHE_INVALID_SESSION   - the underlying session in which the cacheSession 
  *                        was created has been destroyed.

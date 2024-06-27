@@ -1,0 +1,19 @@
+OpenSSL TLS Libraries
+---------------------
+
+Solace provides compiled OpenSSL libraries for developer convenience on some platforms. 
+The libraries here, libssl and libcrytpo, were compiled from OpenSSL 3.0.8
+source.
+
+These libaries allow for easy development and testing on platforms where 
+OpenSSL TLS libraries do not already exist.
+
+We recommend that customers use the OS provided or their own supplied openSSL
+libraries.  Solace does not guarantee that the TLS libraries shipped with the
+C API are the most current that contain all necessary security updates. These
+libraries are provided for developer convenience and not intended for production use.
+
+The C API can load and use OpenSSL 1.0 (now end of life) and OpenSSL 3.x libraries.
+
+The TLS libraries included in this directory are based on OpenSSL 3.0.8 and are
+not current with the latest available from https://www.openssl.org/.
